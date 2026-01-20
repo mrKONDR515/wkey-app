@@ -9,7 +9,7 @@
         :root {
             --bg-color: #0f0f13;
             --card-bg: rgba(255, 255, 255, 0.05);
-            --accent: #8e44ad; /* Фиолетовый неон */
+            --accent: #8e44ad;
             --accent-glow: #9b59b6;
             --text-main: #ffffff;
             --text-sec: #a0a0a0;
@@ -28,185 +28,24 @@
             align-items: center;
             min-height: 100vh;
             background: radial-gradient(circle at top, #1a1a2e, #0f0f13);
-            -webkit-tap-highlight-color: transparent;
+            transition: background 0.5s;
         }
 
-        /* --- ШАПКА ПРОФИЛЯ --- */
-        .profile-header {
-            text-align: center;
-            margin-bottom: 25px;
-            width: 100%;
-            animation: fadeIn 0.5s ease;
-        }
+        .profile-header { text-align: center; margin-bottom: 25px; width: 100%; }
+        .avatar-placeholder { width: 80px; height: 80px; background: linear-gradient(135deg, var(--accent), #3498db); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; border: 2px solid rgba(255,255,255,0.1); }
+        .nickname { font-size: 26px; font-weight: 800; margin-bottom: 5px; }
+        .rating-badge { display: inline-flex; align-items: center; background: rgba(241, 196, 15, 0.15); color: var(--gold); padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 14px; border: 1px solid rgba(241, 196, 15, 0.3); }
 
-        .avatar-placeholder {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--accent), #3498db);
-            border-radius: 50%;
-            margin: 0 auto 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            font-weight: 800;
-            box-shadow: 0 0 20px rgba(142, 68, 173, 0.4);
-            border: 2px solid rgba(255,255,255,0.1);
-        }
+        .mode-selector { width: 100%; max-width: 400px; margin-bottom: 20px; position: relative; }
+        select { width: 100%; padding: 16px; background: var(--card-bg); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; font-size: 16px; font-weight: 600; appearance: none; outline: none; }
 
-        .nickname {
-            font-size: 26px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            margin-bottom: 5px;
-        }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 400px; margin-bottom: 30px; }
+        .stat-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 16px; text-align: center; }
+        .stat-value { font-size: 26px; font-weight: 900; background: linear-gradient(90deg, #fff, #e0e0e0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-label { font-size: 12px; color: var(--text-sec); text-transform: uppercase; font-weight: 600; }
+        .stat-card.full-width { grid-column: span 2; display: flex; justify-content: space-between; align-items: center; padding: 0 25px; }
 
-        .rating-badge {
-            display: inline-flex;
-            align-items: center;
-            background: rgba(241, 196, 15, 0.15);
-            color: var(--gold);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 14px;
-            border: 1px solid rgba(241, 196, 15, 0.3);
-            gap: 5px;
-        }
-
-        /* --- ВЫБОР РЕЖИМА --- */
-        .mode-selector {
-            width: 100%;
-            max-width: 400px;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        select {
-            width: 100%;
-            padding: 16px;
-            background: var(--card-bg);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 600;
-            appearance: none;
-            outline: none;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: border-color 0.2s;
-        }
-
-        select:focus {
-            border-color: var(--accent);
-        }
-
-        .mode-selector::after {
-            content: '▼';
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--accent);
-            pointer-events: none;
-            font-size: 12px;
-        }
-
-        /* --- СЕТКА СТАТИСТИКИ --- */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            width: 100%;
-            max-width: 400px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 16px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .stat-value {
-            font-size: 26px;
-            font-weight: 900;
-            margin-bottom: 4px;
-            background: linear-gradient(90deg, #fff, #e0e0e0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-sec);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-        }
-
-        /* Карточка K/D занимает всю ширину */
-        .stat-card.full-width {
-            grid-column: span 2;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 25px;
-            height: 70px;
-        }
-        .stat-card.full-width .stat-value {
-            font-size: 32px;
-            margin: 0;
-            color: var(--accent);
-            -webkit-text-fill-color: var(--accent);
-        }
-
-        /* --- КНОПКА --- */
-        .main-btn {
-            background: linear-gradient(92deg, var(--accent), var(--accent-glow));
-            color: white;
-            border: none;
-            width: 100%;
-            max-width: 400px;
-            padding: 18px;
-            border-radius: 16px;
-            font-size: 18px;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 8px 25px rgba(142, 68, 173, 0.3);
-            transition: transform 0.1s, box-shadow 0.1s;
-            position: relative;
-            overflow: hidden;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .main-btn:active {
-            transform: scale(0.97);
-            box-shadow: 0 4px 12px rgba(142, 68, 173, 0.2);
-        }
-
-        .hint {
-            margin-top: auto;
-            padding-top: 20px;
-            font-size: 11px;
-            color: var(--text-sec);
-            opacity: 0.5;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .main-btn { background: linear-gradient(92deg, var(--accent), var(--accent-glow)); color: white; border: none; width: 100%; max-width: 400px; padding: 18px; border-radius: 16px; font-size: 18px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -214,9 +53,7 @@
     <div class="profile-header">
         <div class="avatar-placeholder" id="avatar">W</div>
         <div class="nickname" id="username">Guest</div>
-        <div class="rating-badge">
-            <span>🏆</span> <span id="rating">1000</span> MMR
-        </div>
+        <div class="rating-badge"><span>🏆</span> <span id="rating">1000</span> MMR</div>
     </div>
 
     <div class="mode-selector">
@@ -247,11 +84,7 @@
         </div>
     </div>
 
-    <button class="main-btn" onclick="createDuel()">
-        ⚔️ СОЗДАТЬ ДУЭЛЬ
-    </button>
-
-    <div class="hint">W-KEY COMPETITIVE SYSTEM v5.0</div>
+    <button class="main-btn" onclick="createDuel()">⚔️ СОЗДАТЬ ДУЭЛЬ</button>
 
     <script>
         const tg = window.Telegram.WebApp;
@@ -260,33 +93,38 @@
         const urlParams = new URLSearchParams(window.location.search);
         const nick = urlParams.get('nick') || "Guest";
         const rating = urlParams.get('rating') || "1000";
+        const skin = urlParams.get('skin') || "default";
 
         document.getElementById('username').innerText = nick;
         document.getElementById('avatar').innerText = nick.charAt(0).toUpperCase();
         document.getElementById('rating').innerText = rating;
 
+        // ПРИМЕНЕНИЕ СКИНА
+        if (skin === 'neon') {
+            document.body.style.background = 'radial-gradient(circle at top, #2c003e, #000)';
+            document.documentElement.style.setProperty('--accent', '#00ffcc');
+            document.documentElement.style.setProperty('--accent-glow', '#009977');
+        } else if (skin === 'gold') {
+            document.body.style.background = 'radial-gradient(circle at top, #3e2c00, #000)';
+            document.documentElement.style.setProperty('--accent', '#ffd700');
+            document.documentElement.style.setProperty('--accent-glow', '#ffaa00');
+            document.documentElement.style.setProperty('--text-main', '#ffecb3');
+        }
+
         let statsData = {};
         try {
             const rawData = urlParams.get('data');
-            if (rawData) {
-                statsData = JSON.parse(decodeURIComponent(rawData));
-            }
-        } catch (e) { console.error(e); }
+            if (rawData) statsData = JSON.parse(decodeURIComponent(rawData));
+        } catch (e) {}
 
         function updateStats() {
             const mode = document.getElementById('gameMode').value;
-
-            // ЗАЩИТА ОТ ОШИБОК: Если данных нет, подставляем нули
-            // Это починит отображение, если API не вернул данные для Ранкеда
             const currentStats = statsData[mode] || {kills: 0, matches: 0, kd: 0};
-
             document.getElementById('kills').innerText = currentStats.kills;
             document.getElementById('matches').innerText = currentStats.matches;
             document.getElementById('kd').innerText = currentStats.kd;
-
             tg.HapticFeedback.selectionChanged();
         }
-
         updateStats();
 
         function createDuel() {
