@@ -10,199 +10,127 @@
             --bg-color: #0f0f13;
             --card-bg: rgba(255, 255, 255, 0.05);
             --accent: #8e44ad;
-            --accent-glow: #9b59b6;
             --text-main: #ffffff;
             --text-sec: #a0a0a0;
-            --success: #2ecc71;
             --gold: #f1c40f;
+            --green: #2ecc71;
         }
 
         body {
-            background-color: var(--bg-color);
+            background: radial-gradient(circle at top, #1a1a2e, #000);
             color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            font-family: sans-serif;
             margin: 0;
             padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            background: radial-gradient(circle at top, #1a1a2e, #0f0f13);
             -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
 
-        /* НАВИГАЦИЯ (ТАБЫ) */
+        /* ТАБЫ */
         .tabs {
             display: flex;
             background: rgba(255,255,255,0.05);
-            padding: 5px;
             border-radius: 12px;
             margin-bottom: 20px;
             width: 100%;
-            max-width: 400px;
+            padding: 4px;
         }
-
         .tab-btn {
             flex: 1;
             padding: 10px;
             text-align: center;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
             color: var(--text-sec);
+            font-weight: 600;
+            transition: 0.3s;
         }
-
         .tab-btn.active {
             background: var(--accent);
             color: white;
-            box-shadow: 0 4px 15px rgba(142, 68, 173, 0.4);
+            box-shadow: 0 0 15px rgba(142, 68, 173, 0.4);
         }
 
         /* КОНТЕНТ */
-        .tab-content {
-            width: 100%;
-            max-width: 400px;
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-        .tab-content.active { display: block; }
-
+        .content { display: none; width: 100%; animation: fadeIn 0.3s ease; }
+        .content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         /* ПРОФИЛЬ */
         .profile-card {
             background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.1);
             border-radius: 20px;
             padding: 20px;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.05);
             margin-bottom: 20px;
         }
-
         .avatar {
-            width: 70px;
-            height: 70px;
+            width: 70px; height: 70px;
             background: linear-gradient(135deg, var(--accent), #3498db);
             border-radius: 50%;
             margin: 0 auto 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             font-size: 30px;
-            border: 2px solid rgba(255,255,255,0.1);
+            box-shadow: 0 0 20px rgba(142, 68, 173, 0.3);
         }
-
-        .nickname { font-size: 22px; font-weight: 800; }
-        .rank { color: var(--gold); font-weight: 700; margin-top: 5px; font-size: 14px; }
+        .nick { font-size: 20px; font-weight: 800; }
+        .rank { color: var(--gold); font-size: 14px; margin-top: 5px; }
 
         /* СТАТИСТИКА */
-        .stats-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .stat-box {
-            background: rgba(255,255,255,0.03);
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .stat-val { font-size: 20px; font-weight: 800; }
-        .stat-lbl { font-size: 10px; color: var(--text-sec); text-transform: uppercase; }
-
         .mode-select {
-            width: 100%;
-            padding: 15px;
-            background: #1e1e24;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            font-size: 16px;
-            outline: none;
+            width: 100%; padding: 12px;
+            background: #222; color: white;
+            border: 1px solid #444; border-radius: 12px;
+            margin-bottom: 15px; font-size: 16px; outline: none;
         }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-box { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; text-align: center; }
+        .stat-val { font-size: 18px; font-weight: 800; }
+        .stat-lbl { font-size: 10px; color: var(--text-sec); margin-top: 3px; }
 
         /* МАГАЗИН */
-        .shop-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+        .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .item {
+            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px; padding: 15px; text-align: center;
+            display: flex; flex-direction: column; justify-content: space-between;
         }
-
-        .item-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 15px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .item-icon { font-size: 36px; margin-bottom: 10px; }
-        .item-name { font-weight: 700; font-size: 14px; margin-bottom: 5px; }
-        .item-desc { font-size: 10px; color: var(--text-sec); margin-bottom: 10px; line-height: 1.2; }
-
-        .price-tag {
-            background: rgba(241, 196, 15, 0.1);
-            color: var(--gold);
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 800;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-
+        .item-icon { font-size: 30px; margin-bottom: 10px; }
+        .item-title { font-weight: 700; font-size: 13px; margin-bottom: 5px; }
+        .item-price { color: var(--gold); font-weight: 800; font-size: 12px; margin-bottom: 10px; }
         .buy-btn {
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 10px;
-            width: 100%;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 13px;
+            background: var(--green); color: white; border: none;
+            padding: 8px; border-radius: 8px; width: 100%; font-weight: 700; cursor: pointer;
         }
-
         .buy-btn:active { transform: scale(0.95); }
 
         /* ГЛАВНАЯ КНОПКА */
         .play-btn {
             background: linear-gradient(90deg, var(--accent), #c0392b);
-            color: white;
-            border: none;
-            width: 100%;
-            max-width: 400px;
-            padding: 18px;
-            border-radius: 16px;
-            font-size: 18px;
-            font-weight: 900;
-            text-transform: uppercase;
-            box-shadow: 0 10px 30px rgba(142, 68, 173, 0.3);
-            cursor: pointer;
-            margin-top: 20px;
+            color: white; border: none; width: 100%; padding: 16px;
+            border-radius: 16px; font-size: 18px; font-weight: 900;
+            text-transform: uppercase; cursor: pointer;
+            box-shadow: 0 5px 20px rgba(142, 68, 173, 0.3);
         }
+        .play-btn:active { transform: scale(0.97); }
     </style>
 </head>
 <body>
 
     <div class="tabs">
-        <div class="tab-btn active" onclick="setTab('profile')">👤 ПРОФИЛЬ</div>
-        <div class="tab-btn" onclick="setTab('shop')">🛒 МАГАЗИН</div>
+        <div class="tab-btn active" onclick="switchTab('profile')">Профиль</div>
+        <div class="tab-btn" onclick="switchTab('shop')">Магазин</div>
     </div>
 
-    <div id="profile" class="tab-content active">
+    <div id="profile" class="content active">
         <div class="profile-card">
-            <div class="avatar" id="avatar">?</div>
-            <div class="nickname" id="nick">Loading...</div>
+            <div class="avatar" id="avatar">👤</div>
+            <div class="nick" id="nick">Loading...</div>
             <div class="rank" id="rank">Loading...</div>
         </div>
 
@@ -213,7 +141,7 @@
             <option value="ranked_solo">Ranked Solo</option>
         </select>
 
-        <div class="stats-row">
+        <div class="stats-grid">
             <div class="stat-box">
                 <div class="stat-val" id="kills">0</div>
                 <div class="stat-lbl">KILLS</div>
@@ -222,42 +150,42 @@
                 <div class="stat-val" id="matches">0</div>
                 <div class="stat-lbl">MATCHES</div>
             </div>
+            <div class="stat-box">
+                <div class="stat-val" id="kd">0.0</div>
+                <div class="stat-lbl">K/D</div>
+            </div>
         </div>
 
-        <button class="play-btn" onclick="createDuel()">⚔️ СОЗДАТЬ ДУЭЛЬ</button>
+        <div style="text-align: left; margin-bottom: 10px; font-weight: bold; color: var(--text-sec); font-size: 12px;">LAST MATCHES</div>
+        <div id="historyList" style="margin-bottom: 20px;"></div>
+
+        <button class="play-btn" onclick="createDuel()">⚔️ ИГРАТЬ</button>
     </div>
 
-    <div id="shop" class="tab-content">
+    <div id="shop" class="content">
         <div class="shop-grid">
-            <div class="item-card">
+            <div class="item">
                 <div class="item-icon">🛡️</div>
-                <div class="item-name">MMR Shield</div>
-                <div class="item-desc">Спасает рейтинг при 1 поражении</div>
-                <div class="price-tag">500 💰</div>
+                <div class="item-title">MMR Shield</div>
+                <div class="item-price">500 💰</div>
                 <button class="buy-btn" onclick="buyItem('shield')">КУПИТЬ</button>
             </div>
-
-            <div class="item-card">
+            <div class="item">
                 <div class="item-icon">🚀</div>
-                <div class="item-name">x2 Coins</div>
-                <div class="item-desc">Удваивает монеты на 24 часа</div>
-                <div class="price-tag">1000 💰</div>
+                <div class="item-title">x2 Coins (24h)</div>
+                <div class="item-price">1000 💰</div>
                 <button class="buy-btn" onclick="buyItem('booster')">КУПИТЬ</button>
             </div>
-
-            <div class="item-card">
+            <div class="item">
                 <div class="item-icon">🎨</div>
-                <div class="item-name">Neon Theme</div>
-                <div class="item-desc">Неоновый стиль профиля</div>
-                <div class="price-tag">100 💰</div>
+                <div class="item-title">Neon Theme</div>
+                <div class="item-price">100 💰</div>
                 <button class="buy-btn" onclick="buyItem('skin_neon')">КУПИТЬ</button>
             </div>
-
-            <div class="item-card">
+            <div class="item">
                 <div class="item-icon">🏆</div>
-                <div class="item-name">Gold Theme</div>
-                <div class="item-desc">Золотой стиль для элиты</div>
-                <div class="price-tag">500 💰</div>
+                <div class="item-title">Gold Theme</div>
+                <div class="item-price">500 💰</div>
                 <button class="buy-btn" onclick="buyItem('skin_gold')">КУПИТЬ</button>
             </div>
         </div>
@@ -267,57 +195,85 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // 1. ПАРСИНГ ДАННЫХ ИЗ URL
+        // Парсинг данных
         const params = new URLSearchParams(window.location.search);
-        const nick = params.get('nick') || "Guest";
-        const rating = params.get('rating') || "0";
-        const skin = params.get('skin') || "default";
+        const nick = params.get('nick') || "User";
+        const rawData = decodeURIComponent(params.get('data'));
+        let data = {};
 
-        let statsData = {};
-        let rankInfo = { name: "Bronze", emoji: "🟤" };
+        try { data = JSON.parse(rawData); } catch(e) {}
 
-        try {
-            const rawData = decodeURIComponent(params.get('data'));
-            const parsed = JSON.parse(rawData);
-            statsData = parsed;
-            if (parsed.rank_info) rankInfo = parsed.rank_info;
-        } catch (e) {
-            console.log("JSON Error");
-        }
-
-        // 2. ИНИЦИАЛИЗАЦИЯ
+        // Инициализация
         document.getElementById('nick').innerText = nick;
-        document.getElementById('avatar').innerText = nick.charAt(0).toUpperCase();
-        document.getElementById('rank').innerText = `${rankInfo.emoji} ${rankInfo.name} (${rating} MMR)`;
+        document.getElementById('avatar').innerText = nick[0].toUpperCase();
 
-        // Применение скина
-        if (skin === 'neon') {
-            document.body.style.background = "radial-gradient(circle at top, #2c003e, #000)";
-            document.documentElement.style.setProperty('--accent', '#00ffcc');
-        } else if (skin === 'gold') {
-            document.body.style.background = "radial-gradient(circle at top, #3e2c00, #000)";
-            document.documentElement.style.setProperty('--accent', '#ffd700');
-            document.documentElement.style.setProperty('--text-main', '#fff8e1');
+        if (data.rank_info) {
+            document.getElementById('rank').innerText = `${data.rank_info.emoji} ${data.rank_info.name}`;
         }
 
-        // 3. ФУНКЦИИ
-        function setTab(tabName) {
-            // Переключение кнопок
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        // Темы
+        if (params.get('skin') === 'neon') {
+            document.body.style.background = "radial-gradient(circle, #2c003e, #000)";
+            document.documentElement.style.setProperty('--accent', '#00ffcc');
+        } else if (params.get('skin') === 'gold') {
+            document.body.style.background = "radial-gradient(circle, #3e2c00, #000)";
+            document.documentElement.style.setProperty('--accent', '#ffd700');
+            document.documentElement.style.setProperty('--text-main', '#ffecb3');
+        }
+
+        // История матчей
+        const historyContainer = document.getElementById('historyList');
+        if (data.history && data.history.length > 0) {
+            data.history.forEach(match => {
+                const div = document.createElement('div');
+                const color = match.result === 'win' ? '#2ecc71' : (match.result === 'loss' ? '#e74c3c' : '#95a5a6');
+                div.style.background = 'rgba(255,255,255,0.05)';
+                div.style.padding = '8px';
+                div.style.marginBottom = '5px';
+                div.style.borderRadius = '8px';
+                div.style.borderLeft = `4px solid ${color}`;
+                div.style.display = 'flex';
+                div.style.justifyContent = 'space-between';
+                div.style.fontSize = '12px';
+                div.innerHTML = `<span>${match.mode}</span> <span style="color:${color}; font-weight:bold">${match.result.toUpperCase()}</span>`;
+                historyContainer.appendChild(div);
+            });
+        } else {
+            historyContainer.innerHTML = '<div style="opacity:0.5; font-size:12px">Нет сыгранных матчей</div>';
+        }
+
+        // Логика
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+
             event.target.classList.add('active');
-
-            // Переключение контента
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
-
+            document.getElementById(tab).classList.add('active');
             tg.HapticFeedback.selectionChanged();
+        }
+
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const val = Math.floor(progress * (end - start) + start);
+                obj.innerHTML = val;
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
         }
 
         function renderStats() {
             const mode = document.getElementById('mode').value;
-            const current = statsData[mode] || { kills: 0, matches: 0 };
-            document.getElementById('kills').innerText = current.kills;
-            document.getElementById('matches').innerText = current.matches;
+            const stats = data[mode] || {kills:0, matches:0};
+
+            animateValue("kills", 0, stats.kills, 500);
+            animateValue("matches", 0, stats.matches, 500);
+
+            const kd = stats.matches > 0 ? (stats.kills / stats.matches).toFixed(2) : 0;
+            document.getElementById('kd').innerText = kd;
         }
         renderStats();
 
@@ -327,12 +283,10 @@
             tg.sendData("create_duel_action|" + mode);
         }
 
-        function buyItem(itemCode) {
+        function buyItem(item) {
             tg.HapticFeedback.notificationOccurred('warning');
-            tg.showConfirm(`Купить этот предмет?`, (ok) => {
-                if (ok) {
-                    tg.sendData("buy_item|" + itemCode);
-                }
+            tg.showConfirm("Купить этот предмет?", (ok) => {
+                if(ok) tg.sendData("buy_item|" + item);
             });
         }
     </script>
