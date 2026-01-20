@@ -3,291 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>W-Key League</title>
+    <title>W-Key Arena</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
             --bg-color: #0f0f13;
             --card-bg: rgba(255, 255, 255, 0.05);
             --accent: #8e44ad;
+            --win: #2ecc71;
+            --loss: #e74c3c;
             --text-main: #ffffff;
             --text-sec: #a0a0a0;
-            --gold: #f1c40f;
-            --green: #2ecc71;
         }
 
         body {
-            background: radial-gradient(circle at top, #1a1a2e, #000);
+            background-color: var(--bg-color);
             color: var(--text-main);
-            font-family: sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            -webkit-tap-highlight-color: transparent;
+            background: radial-gradient(circle at top, #1a1a2e, #0f0f13);
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* ТАБЫ */
-        .tabs {
-            display: flex;
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            margin-bottom: 20px;
-            width: 100%;
-            padding: 4px;
-        }
-        .tab-btn {
-            flex: 1;
-            padding: 10px;
-            text-align: center;
-            border-radius: 10px;
-            cursor: pointer;
-            color: var(--text-sec);
-            font-weight: 600;
-            transition: 0.3s;
-        }
-        .tab-btn.active {
-            background: var(--accent);
-            color: white;
-            box-shadow: 0 0 15px rgba(142, 68, 173, 0.4);
-        }
+        /* АНИМАЦИИ */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* КОНТЕНТ */
-        .content { display: none; width: 100%; animation: fadeIn 0.3s ease; }
-        .content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* ПРОФИЛЬ */
-        .profile-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 20px;
+        .header {
             text-align: center;
             margin-bottom: 20px;
+            animation: fadeIn 0.5s ease;
         }
+
         .avatar {
-            width: 70px; height: 70px;
-            background: linear-gradient(135deg, var(--accent), #3498db);
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent), #3498db);
             margin: 0 auto 10px;
-            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 20px rgba(142, 68, 173, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 30px;
-            box-shadow: 0 0 20px rgba(142, 68, 173, 0.3);
         }
-        .nick { font-size: 20px; font-weight: 800; }
-        .rank { color: var(--gold); font-size: 14px; margin-top: 5px; }
 
-        /* СТАТИСТИКА */
-        .mode-select {
-            width: 100%; padding: 12px;
-            background: #222; color: white;
-            border: 1px solid #444; border-radius: 12px;
-            margin-bottom: 15px; font-size: 16px; outline: none;
+        .rank-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .stat-box { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; text-align: center; }
-        .stat-val { font-size: 18px; font-weight: 800; }
-        .stat-lbl { font-size: 10px; color: var(--text-sec); margin-top: 3px; }
 
-        /* МАГАЗИН */
-        .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .item {
-            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 15px; padding: 15px; text-align: center;
-            display: flex; flex-direction: column; justify-content: space-between;
+        /* КАРТОЧКИ СТАТИСТИКИ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 25px;
         }
-        .item-icon { font-size: 30px; margin-bottom: 10px; }
-        .item-title { font-weight: 700; font-size: 13px; margin-bottom: 5px; }
-        .item-price { color: var(--gold); font-weight: 800; font-size: 12px; margin-bottom: 10px; }
-        .buy-btn {
-            background: var(--green); color: white; border: none;
-            padding: 8px; border-radius: 8px; width: 100%; font-weight: 700; cursor: pointer;
-        }
-        .buy-btn:active { transform: scale(0.95); }
 
-        /* ГЛАВНАЯ КНОПКА */
+        .stat-card {
+            background: var(--card-bg);
+            padding: 15px 5px;
+            border-radius: 12px;
+            text-align: center;
+            animation: fadeIn 0.7s ease;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .stat-label { font-size: 12px; color: var(--text-sec); }
+
+        /* ИСТОРИЯ МАТЧЕЙ */
+        .history-section {
+            width: 100%;
+            margin-bottom: 80px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .history-title {
+            font-size: 14px;
+            color: var(--text-sec);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .history-item {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid transparent;
+        }
+
+        .match-win { border-left-color: var(--win); background: linear-gradient(90deg, rgba(46, 204, 113, 0.1), transparent); }
+        .match-loss { border-left-color: var(--loss); background: linear-gradient(90deg, rgba(231, 76, 60, 0.1), transparent); }
+        .match-draw { border-left-color: #bdc3c7; }
+
+        .win-text { color: var(--win); font-weight: bold; }
+        .loss-text { color: var(--loss); font-weight: bold; }
+        .draw-text { color: #bdc3c7; font-weight: bold; }
+
+        /* КНОПКА */
         .play-btn {
-            background: linear-gradient(90deg, var(--accent), #c0392b);
-            color: white; border: none; width: 100%; padding: 16px;
-            border-radius: 16px; font-size: 18px; font-weight: 900;
-            text-transform: uppercase; cursor: pointer;
-            box-shadow: 0 5px 20px rgba(142, 68, 173, 0.3);
+            position: fixed;
+            bottom: 20px;
+            width: 90%;
+            left: 5%;
+            background: linear-gradient(45deg, #8e44ad, #c0392b);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 900;
+            text-transform: uppercase;
+            box-shadow: 0 10px 30px rgba(142, 68, 173, 0.4);
+            cursor: pointer;
         }
-        .play-btn:active { transform: scale(0.97); }
     </style>
 </head>
 <body>
 
-    <div class="tabs">
-        <div class="tab-btn active" onclick="switchTab('profile')">Профиль</div>
-        <div class="tab-btn" onclick="switchTab('shop')">Магазин</div>
-    </div>
-
-    <div id="profile" class="content active">
-        <div class="profile-card">
-            <div class="avatar" id="avatar">👤</div>
-            <div class="nick" id="nick">Loading...</div>
-            <div class="rank" id="rank">Loading...</div>
-        </div>
-
-        <select class="mode-select" id="mode" onchange="renderStats()">
-            <option value="solo">Solo Build</option>
-            <option value="duo">Duo Build</option>
-            <option value="squad">Squad Build</option>
-            <option value="ranked_solo">Ranked Solo</option>
-        </select>
-
-        <div class="stats-grid">
-            <div class="stat-box">
-                <div class="stat-val" id="kills">0</div>
-                <div class="stat-lbl">KILLS</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-val" id="matches">0</div>
-                <div class="stat-lbl">MATCHES</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-val" id="kd">0.0</div>
-                <div class="stat-lbl">K/D</div>
-            </div>
-        </div>
-
-        <div style="text-align: left; margin-bottom: 10px; font-weight: bold; color: var(--text-sec); font-size: 12px;">LAST MATCHES</div>
-        <div id="historyList" style="margin-bottom: 20px;"></div>
-
-        <button class="play-btn" onclick="createDuel()">⚔️ ИГРАТЬ</button>
-    </div>
-
-    <div id="shop" class="content">
-        <div class="shop-grid">
-            <div class="item">
-                <div class="item-icon">🛡️</div>
-                <div class="item-title">MMR Shield</div>
-                <div class="item-price">500 💰</div>
-                <button class="buy-btn" onclick="buyItem('shield')">КУПИТЬ</button>
-            </div>
-            <div class="item">
-                <div class="item-icon">🚀</div>
-                <div class="item-title">x2 Coins (24h)</div>
-                <div class="item-price">1000 💰</div>
-                <button class="buy-btn" onclick="buyItem('booster')">КУПИТЬ</button>
-            </div>
-            <div class="item">
-                <div class="item-icon">🎨</div>
-                <div class="item-title">Neon Theme</div>
-                <div class="item-price">100 💰</div>
-                <button class="buy-btn" onclick="buyItem('skin_neon')">КУПИТЬ</button>
-            </div>
-            <div class="item">
-                <div class="item-icon">🏆</div>
-                <div class="item-title">Gold Theme</div>
-                <div class="item-price">500 💰</div>
-                <button class="buy-btn" onclick="buyItem('skin_gold')">КУПИТЬ</button>
-            </div>
+    <div class="header">
+        <div class="avatar" id="avatarEmoji">👤</div>
+        <h2 id="nickname">Loading...</h2>
+        <div class="rank-badge">
+            <span id="rankEmoji">🏆</span>
+            <span id="rankName">Loading...</span>
         </div>
     </div>
+
+    <select id="gameMode" style="width:100%; padding:10px; background:#222; color:white; border:none; border-radius:10px; margin-bottom:15px;" onchange="renderStats()">
+        <option value="solo">SOLO BUILD</option>
+        <option value="duo">DUO BUILD</option>
+        <option value="squad">SQUAD BUILD</option>
+    </select>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value" id="kills">0</div>
+            <div class="stat-label">KILLS</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="matches">0</div>
+            <div class="stat-label">MATCHES</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="kd">0</div>
+            <div class="stat-label">K/D</div>
+        </div>
+    </div>
+
+    <div class="history-section">
+        <div class="history-title">LAST MATCHES</div>
+        <div id="historyList"></div>
+    </div>
+
+    <button class="play-btn" onclick="createDuel()">
+        <span>⚔️ ИГРАТЬ (SOLO)</span>
+    </button>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Парсинг данных
-        const params = new URLSearchParams(window.location.search);
-        const nick = params.get('nick') || "User";
-        const rawData = decodeURIComponent(params.get('data'));
-        let data = {};
+        // Парсинг данных из URL (как передает твой commands.py)
+        const urlParams = new URLSearchParams(window.location.search);
+        const nickname = urlParams.get('nick') || "Player";
+        const rawData = urlParams.get('data');
 
-        try { data = JSON.parse(rawData); } catch(e) {}
+        let statsData = {};
+        let rankInfo = {name: "Bronze", emoji: "🟤"};
+        let matchHistory = [];
+
+        try {
+            const parsed = JSON.parse(rawData);
+            statsData = parsed; // Тут вся статистика
+            rankInfo = parsed.rank_info || rankInfo;
+            matchHistory = parsed.history || []; // Вот массив истории из твоей БД
+        } catch (e) {
+            console.error("JSON Error", e);
+        }
+
+        // Заполнение шапки
+        document.getElementById('nickname').innerText = nickname;
+        document.getElementById('rankName').innerText = rankInfo.name;
+        document.getElementById('rankEmoji').innerText = rankInfo.emoji;
+
+        // Функция отображения статистики при смене режима
+        function renderStats() {
+            const mode = document.getElementById('gameMode').value;
+            const current = statsData[mode] || {kills: 0, matches: 0, kd: 0};
+
+            document.getElementById('kills').innerText = current.kills;
+            document.getElementById('matches').innerText = current.matches;
+            document.getElementById('kd').innerText = current.kd;
+        }
+
+        // Рендеринг истории (используем данные из commands.py -> db.py)
+        const list = document.getElementById('historyList');
+        if (matchHistory.length === 0) {
+            list.innerHTML = '<div style="text-align:center; color:#555; padding:20px;">Матчей пока нет</div>';
+        } else {
+            matchHistory.forEach(match => {
+                const div = document.createElement('div');
+                div.className = `history-item match-${match.result}`;
+
+                let resText = "DRAW";
+                let resClass = "draw-text";
+                if(match.result === 'win') { resText = "VICTORY"; resClass = "win-text"; }
+                if(match.result === 'loss') { resText = "DEFEAT"; resClass = "loss-text"; }
+
+                div.innerHTML = `
+                    <div>
+                        <div style="font-weight:bold; font-size:14px;">${match.mode.toUpperCase()}</div>
+                        <div style="font-size:11px; color:#aaa;">${match.date}</div>
+                    </div>
+                    <div class="${resClass}">${resText}</div>
+                `;
+                list.appendChild(div);
+            });
+        }
 
         // Инициализация
-        document.getElementById('nick').innerText = nick;
-        document.getElementById('avatar').innerText = nick[0].toUpperCase();
-
-        if (data.rank_info) {
-            document.getElementById('rank').innerText = `${data.rank_info.emoji} ${data.rank_info.name}`;
-        }
-
-        // Темы
-        if (params.get('skin') === 'neon') {
-            document.body.style.background = "radial-gradient(circle, #2c003e, #000)";
-            document.documentElement.style.setProperty('--accent', '#00ffcc');
-        } else if (params.get('skin') === 'gold') {
-            document.body.style.background = "radial-gradient(circle, #3e2c00, #000)";
-            document.documentElement.style.setProperty('--accent', '#ffd700');
-            document.documentElement.style.setProperty('--text-main', '#ffecb3');
-        }
-
-        // История матчей
-        const historyContainer = document.getElementById('historyList');
-        if (data.history && data.history.length > 0) {
-            data.history.forEach(match => {
-                const div = document.createElement('div');
-                const color = match.result === 'win' ? '#2ecc71' : (match.result === 'loss' ? '#e74c3c' : '#95a5a6');
-                div.style.background = 'rgba(255,255,255,0.05)';
-                div.style.padding = '8px';
-                div.style.marginBottom = '5px';
-                div.style.borderRadius = '8px';
-                div.style.borderLeft = `4px solid ${color}`;
-                div.style.display = 'flex';
-                div.style.justifyContent = 'space-between';
-                div.style.fontSize = '12px';
-                div.innerHTML = `<span>${match.mode}</span> <span style="color:${color}; font-weight:bold">${match.result.toUpperCase()}</span>`;
-                historyContainer.appendChild(div);
-            });
-        } else {
-            historyContainer.innerHTML = '<div style="opacity:0.5; font-size:12px">Нет сыгранных матчей</div>';
-        }
-
-        // Логика
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-
-            event.target.classList.add('active');
-            document.getElementById(tab).classList.add('active');
-            tg.HapticFeedback.selectionChanged();
-        }
-
-        function animateValue(id, start, end, duration) {
-            const obj = document.getElementById(id);
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                const val = Math.floor(progress * (end - start) + start);
-                obj.innerHTML = val;
-                if (progress < 1) window.requestAnimationFrame(step);
-            };
-            window.requestAnimationFrame(step);
-        }
-
-        function renderStats() {
-            const mode = document.getElementById('mode').value;
-            const stats = data[mode] || {kills:0, matches:0};
-
-            animateValue("kills", 0, stats.kills, 500);
-            animateValue("matches", 0, stats.matches, 500);
-
-            const kd = stats.matches > 0 ? (stats.kills / stats.matches).toFixed(2) : 0;
-            document.getElementById('kd').innerText = kd;
-        }
         renderStats();
 
         function createDuel() {
-            tg.HapticFeedback.impactOccurred('medium');
-            const mode = document.getElementById('mode').value;
-            tg.sendData("create_duel_action|" + mode);
-        }
-
-        function buyItem(item) {
-            tg.HapticFeedback.notificationOccurred('warning');
-            tg.showConfirm("Купить этот предмет?", (ok) => {
-                if(ok) tg.sendData("buy_item|" + item);
-            });
+            tg.hapticFeedback.impactOccurred('medium');
+            tg.sendData("create_duel_action|solo");
         }
     </script>
 </body>
