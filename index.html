@@ -9,11 +9,11 @@
         :root {
             --bg-color: #0f0f13;
             --card-bg: rgba(255, 255, 255, 0.05);
-            --accent: #8e44ad; /* Фиолетовый по умолчанию */
-            --accent-glow: #9b59b6;
+            --accent: #8e44ad;
+            --win: #2ecc71;
+            --loss: #e74c3c;
             --text-main: #ffffff;
             --text-sec: #a0a0a0;
-            --gold: #f1c40f;
         }
 
         body {
@@ -27,352 +27,335 @@
             align-items: center;
             min-height: 100vh;
             background: radial-gradient(circle at top, #1a1a2e, #0f0f13);
-            transition: background 0.5s ease;
+            user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- ПРОФИЛЬ --- */
-        .profile-header {
+        /* АНИМАЦИИ */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        .header {
             text-align: center;
-            width: 100%;
             margin-bottom: 20px;
             animation: fadeIn 0.5s ease;
         }
 
-        .avatar-placeholder {
+        .avatar {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, var(--accent), #3498db);
             border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent), #3498db);
             margin: 0 auto 10px;
+            box-shadow: 0 0 20px rgba(142, 68, 173, 0.5);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
-            font-weight: 800;
-            border: 2px solid rgba(255,255,255,0.1);
-            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            font-size: 30px;
         }
 
-        .nickname {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 15px;
-            letter-spacing: 0.5px;
+        .rank-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* --- БЛОК РАНГА --- */
-        .rank-container {
-            width: 100%;
-            max-width: 400px;
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 15px;
-            border: 1px solid rgba(255,255,255,0.05);
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .rank-icon {
-            font-size: 42px;
-            margin-bottom: 5px;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
-        }
-
-        .rank-name {
-            font-size: 20px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            color: var(--gold);
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 4px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent), #00d2ff);
-            width: 0%;
-            transition: width 1s ease-out;
-            box-shadow: 0 0 10px var(--accent);
-        }
-
-        .progress-text {
-            font-size: 11px;
-            color: var(--text-sec);
-            margin-top: 8px;
-            display: flex;
-            justify-content: space-between;
-            font-weight: 600;
-        }
-
-        /* --- ВЫБОР РЕЖИМА --- */
+        /* СЕЛЕКТОР */
         .mode-selector {
             width: 100%;
-            max-width: 400px;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        select {
-            width: 100%;
-            padding: 16px;
             background: var(--card-bg);
+            border: none;
             color: white;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 14px;
+            padding: 15px;
+            border-radius: 12px;
             font-size: 16px;
-            font-weight: 600;
-            appearance: none;
+            margin-bottom: 20px;
             outline: none;
-            cursor: pointer;
+            appearance: none;
+            text-align: center;
+            font-weight: bold;
+            animation: fadeIn 0.6s ease;
         }
 
-        .mode-selector::after {
-            content: '▼';
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--accent);
-            pointer-events: none;
-            font-size: 12px;
-        }
-
-        /* --- СТАТИСТИКА --- */
+        /* КАРТОЧКИ СТАТИСТИКИ */
         .stats-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
             width: 100%;
-            max-width: 400px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .stat-card {
             background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 15px;
+            padding: 15px 5px;
+            border-radius: 12px;
             text-align: center;
+            animation: fadeIn 0.7s ease;
+            transition: transform 0.1s;
         }
+
+        .stat-card:active { transform: scale(0.95); }
 
         .stat-value {
-            font-size: 26px;
-            font-weight: 900;
-            margin-bottom: 4px;
-            background: linear-gradient(90deg, #fff, #e0e0e0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 5px;
         }
 
-        .stat-label {
-            font-size: 11px;
+        .stat-label { font-size: 12px; color: var(--text-sec); }
+
+        /* ИСТОРИЯ МАТЧЕЙ */
+        .history-section {
+            width: 100%;
+            margin-bottom: 80px; /* Место под кнопку */
+            animation: fadeIn 0.8s ease;
+        }
+
+        .history-title {
+            font-size: 14px;
             color: var(--text-sec);
+            margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            font-weight: 700;
         }
 
-        .stat-card.full-width {
-            grid-column: span 2;
+        .history-item {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 25px;
-            height: 60px;
+            animation: slideIn 0.5s ease;
+            border-left: 4px solid transparent;
         }
 
-        .stat-card.full-width .stat-value {
-            color: var(--accent);
-            -webkit-text-fill-color: var(--accent);
-            font-size: 30px;
-            margin: 0;
-        }
+        .match-win { border-left-color: var(--win); background: linear-gradient(90deg, rgba(46, 204, 113, 0.1), transparent); }
+        .match-loss { border-left-color: var(--loss); background: linear-gradient(90deg, rgba(231, 76, 60, 0.1), transparent); }
+        .match-draw { border-left-color: #bdc3c7; }
 
-        /* --- КНОПКА --- */
-        .main-btn {
-            background: linear-gradient(92deg, var(--accent), var(--accent-glow));
+        .match-info { display: flex; flex-direction: column; }
+        .match-mode { font-size: 14px; font-weight: bold; }
+        .match-date { font-size: 11px; color: var(--text-sec); }
+        .match-result { font-weight: bold; font-size: 14px; }
+        .win-text { color: var(--win); }
+        .loss-text { color: var(--loss); }
+
+        /* КНОПКА */
+        .play-btn {
+            position: fixed;
+            bottom: 20px;
+            width: 90%;
+            left: 5%;
+            background: linear-gradient(45deg, #8e44ad, #c0392b);
             color: white;
             border: none;
-            width: 100%;
-            max-width: 400px;
             padding: 18px;
             border-radius: 16px;
             font-size: 18px;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            transition: transform 0.1s;
+            font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: auto;
+            box-shadow: 0 10px 30px rgba(142, 68, 173, 0.4);
+            cursor: pointer;
+            transition: all 0.2s;
+            animation: fadeIn 1s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
 
-        .main-btn:active {
-            transform: scale(0.97);
+        .play-btn:active {
+            transform: scale(0.96);
+            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.2);
         }
 
-        .hint {
-            margin-top: 15px;
-            font-size: 10px;
-            color: var(--text-sec);
-            opacity: 0.5;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* ЭФФЕКТЫ */
+        .glitch-effect {
+            animation: glitch 1s infinite;
         }
     </style>
 </head>
 <body>
 
-    <div class="profile-header">
-        <div class="avatar-placeholder" id="avatar">W</div>
-        <div class="nickname" id="username">Loading...</div>
-    </div>
-
-    <div class="rank-container">
-        <div class="rank-icon" id="rankEmoji">🏆</div>
-        <div class="rank-name" id="rankName">LOADING</div>
-
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
-        </div>
-        <div class="progress-text">
-            <span>CURRENT: <span id="currentMMR" style="color: white;">0</span></span>
-            <span>NEXT: <span id="nextRank" style="color: white;">---</span></span>
+    <div class="header">
+        <div class="avatar" id="avatarEmoji">👤</div>
+        <h2 id="nickname">Loading...</h2>
+        <div class="rank-badge">
+            <span id="rankEmoji">🏆</span>
+            <span id="rankName">Loading...</span>
         </div>
     </div>
 
-    <div class="mode-selector">
-        <select id="gameMode" onchange="updateStats()">
-            <option value="solo">Solo (Build)</option>
-            <option value="duo">Duo (Build)</option>
-            <option value="squad">Squad (Build)</option>
-            <option value="ranked_solo">🏆 Ranked Solo</option>
-            <option value="ranked_duo">🏆 Ranked Duo</option>
-            <option value="ranked_squad">🏆 Ranked Squad</option>
-            <option value="reload_duo">🔄 Reload Duo</option>
-            <option value="reload_squad">🔄 Reload Squad</option>
-        </select>
-    </div>
+    <select class="mode-selector" id="gameMode" onchange="updateStatsWithSound()">
+        <option value="solo">SOLO BUILD</option>
+        <option value="duo">DUO BUILD</option>
+        <option value="squad">SQUAD BUILD</option>
+        <option value="ranked_solo">RANKED SOLO</option>
+        <option value="ranked_duo">RANKED DUO</option>
+    </select>
 
     <div class="stats-grid">
-        <div class="stat-card">
+        <div class="stat-card" onclick="playClick()">
             <div class="stat-value" id="kills">0</div>
-            <div class="stat-label">Kills</div>
+            <div class="stat-label">KILLS</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" onclick="playClick()">
             <div class="stat-value" id="matches">0</div>
-            <div class="stat-label">Matches</div>
+            <div class="stat-label">MATCHES</div>
         </div>
-        <div class="stat-card full-width">
-            <div class="stat-label">K/D RATIO</div>
-            <div class="stat-value" id="kd">0.00</div>
+        <div class="stat-card" onclick="playClick()">
+            <div class="stat-value" id="kd">0</div>
+            <div class="stat-label">K/D</div>
         </div>
     </div>
 
-    <button class="main-btn" onclick="createDuel()">
-        ⚔️ СОЗДАТЬ ДУЭЛЬ
-    </button>
+    <div class="history-section">
+        <div class="history-title">LAST MATCHES</div>
+        <div id="historyList">
+            </div>
+    </div>
 
-    <div class="hint">W-KEY LEAGUE SYSTEM v5.0</div>
+    <button class="play-btn" onclick="createDuel()">
+        <span>⚔️ СОЗДАТЬ ДУЭЛЬ</span>
+    </button>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // 1. Получаем параметры из URL
-        const urlParams = new URLSearchParams(window.location.search);
+        // ЗВУКИ
+        const clickSound = new Audio("https://cdn.freesound.org/previews/256/256116_3263906-lq.mp3"); // Short Click
+        const successSound = new Audio("https://cdn.freesound.org/previews/270/270404_5123851-lq.mp3"); // Start Game
 
-        const nick = urlParams.get('nick') || "Guest";
-        const rating = urlParams.get('rating') || "1000";
-        const skin = urlParams.get('skin') || "default";
-
-        // Заполняем базовую инфу
-        document.getElementById('username').innerText = nick;
-        document.getElementById('avatar').innerText = nick.charAt(0).toUpperCase();
-        document.getElementById('currentMMR').innerText = rating;
-
-        // 2. Применяем купленный скин (Темы)
-        if (skin === 'neon') {
-            document.body.style.background = 'radial-gradient(circle at top, #2c003e, #000)';
-            document.documentElement.style.setProperty('--accent', '#00ffcc');
-            document.documentElement.style.setProperty('--accent-glow', '#009977');
-        } else if (skin === 'gold') {
-            document.body.style.background = 'radial-gradient(circle at top, #3e2c00, #000)';
-            document.documentElement.style.setProperty('--accent', '#ffd700');
-            document.documentElement.style.setProperty('--accent-glow', '#ffaa00');
-            document.documentElement.style.setProperty('--text-main', '#ffecb3');
-            document.querySelector('.rank-name').style.color = '#fff';
+        function playClick() {
+            clickSound.currentTime = 0;
+            clickSound.volume = 0.5;
+            clickSound.play().catch(e => console.log("Audio requires interaction"));
         }
 
-        // 3. Парсим большие данные (Статистика + Ранг)
+        // АНИМАЦИЯ ЧИСЕЛ (Count Up)
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            if (start === end) return;
+            const range = end - start;
+            let current = start;
+            const increment = end > start ? 1 : -1;
+            const stepTime = Math.abs(Math.floor(duration / range));
+
+            // Если разница слишком большая, ускоряем шаг
+            const realStepTime = Math.max(stepTime, 10);
+            const stepValue = Math.ceil(range / (duration / realStepTime));
+
+            const timer = setInterval(function() {
+                current += stepValue;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                obj.innerText = Number.isInteger(end) ? current : current.toFixed(2);
+            }, realStepTime);
+        }
+
+        // ПАРСИНГ ДАННЫХ
+        const urlParams = new URLSearchParams(window.location.search);
+        const nickname = urlParams.get('nick') || "Player";
+        const rating = urlParams.get('rating') || "1000";
+        const rawData = urlParams.get('data');
+
         let statsData = {};
-        let rankInfo = {
-            name: "Unranked",
-            emoji: "❔",
-            progress: 0,
-            next_rank: "Bronze"
-        };
+        let rankInfo = {name: "Bronze", emoji: "🟤"};
+        let matchHistory = [];
 
         try {
-            const rawData = urlParams.get('data');
-            if (rawData) {
-                const parsed = JSON.parse(decodeURIComponent(rawData));
-                statsData = parsed;
-
-                // Если бот передал инфу о ранге, берем её
-                if (parsed.rank_info) {
-                    rankInfo = parsed.rank_info;
-                }
-            }
+            const parsed = JSON.parse(rawData);
+            statsData = parsed;
+            rankInfo = parsed.rank_info || rankInfo;
+            matchHistory = parsed.history || []; // Получаем историю из JSON
         } catch (e) {
-            console.error("Data Parse Error", e);
+            console.error("JSON Error", e);
         }
 
-        // 4. Заполняем блок ранга
+        // РЕНДЕРИНГ
+        document.getElementById('nickname').innerText = nickname;
         document.getElementById('rankName').innerText = rankInfo.name;
         document.getElementById('rankEmoji').innerText = rankInfo.emoji;
-        document.getElementById('nextRank').innerText = rankInfo.next_rank;
+        document.getElementById('avatarEmoji').innerText = rankInfo.emoji;
 
-        // Анимация полоски прогресса
-        setTimeout(() => {
-            document.getElementById('progressFill').style.width = rankInfo.progress + "%";
-        }, 300);
+        // РЕНДЕРИНГ ИСТОРИИ
+        const historyContainer = document.getElementById('historyList');
+        if (matchHistory.length === 0) {
+            historyContainer.innerHTML = '<div style="text-align:center; color:#555; padding:20px;">No matches played yet</div>';
+        } else {
+            matchHistory.forEach((match, index) => {
+                // match = {mode: 'solo', result: 'win'/'loss'/'draw', date: '...'}
+                const div = document.createElement('div');
+                div.className = `history-item match-${match.result}`;
+                div.style.animationDelay = `${index * 0.1}s`;
 
-        // 5. Функция обновления цифр при смене режима
+                const resultText = match.result === 'win' ? 'VICTORY' : (match.result === 'loss' ? 'DEFEAT' : 'DRAW');
+                const resultClass = match.result === 'win' ? 'win-text' : (match.result === 'loss' ? 'loss-text' : '');
+
+                div.innerHTML = `
+                    <div class="match-info">
+                        <span class="match-mode">${match.mode.toUpperCase()}</span>
+                        <span class="match-date">${match.date}</span>
+                    </div>
+                    <div class="match-result ${resultClass}">${resultText}</div>
+                `;
+                historyContainer.appendChild(div);
+            });
+        }
+
+        // ОБНОВЛЕНИЕ ЦИФР
+        let previousStats = {kills: 0, matches: 0, kd: 0};
+
+        function updateStatsWithSound() {
+            playClick();
+            updateStats();
+        }
+
         function updateStats() {
             const mode = document.getElementById('gameMode').value;
-            // Если данных нет, ставим по нулям
             const currentStats = statsData[mode] || {kills: 0, matches: 0, kd: 0};
 
-            document.getElementById('kills').innerText = currentStats.kills;
-            document.getElementById('matches').innerText = currentStats.matches;
+            animateValue("kills", previousStats.kills, currentStats.kills, 500);
+            animateValue("matches", previousStats.matches, currentStats.matches, 500);
+
+            // KD просто обновляем (сложно анимировать float красиво без библиотек)
             document.getElementById('kd').innerText = currentStats.kd;
+
+            // Запоминаем для следующей анимации (если переключаем вкладки)
+            // Но при смене режима лучше сбрасывать "визуально" от 0 или просто менять.
+            // Для красоты эффекта "накрутки" лучше каждый раз от 0 до N
+            animateValue("kills", 0, currentStats.kills, 800);
+            animateValue("matches", 0, currentStats.matches, 800);
 
             tg.HapticFeedback.selectionChanged();
         }
 
-        // Запуск при старте
+        // Запуск
         updateStats();
 
-        // 6. Кнопка создания дуэли
         function createDuel() {
+            successSound.play().catch(e => {});
             tg.HapticFeedback.impactOccurred('heavy');
             const selectedMode = document.getElementById('gameMode').value;
-            tg.sendData("create_duel_action|" + selectedMode);
+
+            // Анимация нажатия
+            const btn = document.querySelector('.play-btn');
+            btn.innerHTML = "⌛ СОЗДАНИЕ...";
+
+            setTimeout(() => {
+                tg.sendData("create_duel_action|" + selectedMode);
+            }, 300); // Небольшая задержка для звука
         }
     </script>
 </body>
