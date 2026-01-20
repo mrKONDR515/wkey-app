@@ -148,6 +148,37 @@
             color: var(--text-sec);
             opacity: 0.6;
         }
+        .mode-selector {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 15px;
+        }
+        select {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            appearance: none; /* Убираем стандартную стрелку браузера */
+            outline: none;
+            cursor: pointer;
+        }
+        /* Кастомная стрелочка */
+        .select-wrapper {
+            position: relative;
+        }
+        .select-wrapper::after {
+            content: '▼';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -177,6 +208,16 @@
         </div>
     </div>
 
+    <div class="mode-selector select-wrapper">
+        <select id="gameMode">
+            <option value="solo">👤 Solo Battle Royale</option>
+            <option value="duo">👥 Duos Battle Royale</option>
+            <option value="squad">👨‍👩‍👦‍👦 Squads Battle Royale</option>
+            <option value="ranked_solo">🏆 Ranked Solo</option>
+            <option value="reload_duo" disabled>🔄 Reload (Скоро)</option>
+        </select>
+    </div>
+
     <button class="main-btn" onclick="createDuel()">
         ⚔️ СОЗДАТЬ ДУЭЛЬ
     </button>
@@ -198,13 +239,14 @@
         document.getElementById('matches').innerText = urlParams.get('matches') || "0";
         document.getElementById('kd').innerText = urlParams.get('kd') || "0.0";
 
-        // Функция отправки данных боту
         function createDuel() {
-            // Вибрация телефона (Haptic Feedback) для ощущения "клика"
             tg.HapticFeedback.impactOccurred('heavy');
 
-            // Отправляем команду боту. Он её поймает как сообщение.
-            tg.sendData("create_duel_action");
+            // Получаем то, что выбрал юзер
+            const selectedMode = document.getElementById('gameMode').value;
+
+            // Отправляем боту строку вида: "create_duel_action|solo"
+            tg.sendData("create_duel_action|" + selectedMode);
         }
     </script>
 </body>
