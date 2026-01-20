@@ -9,11 +9,10 @@
         :root {
             --bg-color: #0f0f13;
             --card-bg: rgba(255, 255, 255, 0.05);
-            --accent: #8e44ad;
+            --accent: #8e44ad; /* Фиолетовый по умолчанию */
             --accent-glow: #9b59b6;
             --text-main: #ffffff;
             --text-sec: #a0a0a0;
-            --success: #2ecc71;
             --gold: #f1c40f;
         }
 
@@ -28,32 +27,232 @@
             align-items: center;
             min-height: 100vh;
             background: radial-gradient(circle at top, #1a1a2e, #0f0f13);
-            transition: background 0.5s;
+            transition: background 0.5s ease;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .profile-header { text-align: center; margin-bottom: 25px; width: 100%; }
-        .avatar-placeholder { width: 80px; height: 80px; background: linear-gradient(135deg, var(--accent), #3498db); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; border: 2px solid rgba(255,255,255,0.1); }
-        .nickname { font-size: 26px; font-weight: 800; margin-bottom: 5px; }
-        .rating-badge { display: inline-flex; align-items: center; background: rgba(241, 196, 15, 0.15); color: var(--gold); padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 14px; border: 1px solid rgba(241, 196, 15, 0.3); }
+        /* --- ПРОФИЛЬ --- */
+        .profile-header {
+            text-align: center;
+            width: 100%;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease;
+        }
 
-        .mode-selector { width: 100%; max-width: 400px; margin-bottom: 20px; position: relative; }
-        select { width: 100%; padding: 16px; background: var(--card-bg); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; font-size: 16px; font-weight: 600; appearance: none; outline: none; }
+        .avatar-placeholder {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent), #3498db);
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 800;
+            border: 2px solid rgba(255,255,255,0.1);
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 400px; margin-bottom: 30px; }
-        .stat-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 16px; text-align: center; }
-        .stat-value { font-size: 26px; font-weight: 900; background: linear-gradient(90deg, #fff, #e0e0e0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .stat-label { font-size: 12px; color: var(--text-sec); text-transform: uppercase; font-weight: 600; }
-        .stat-card.full-width { grid-column: span 2; display: flex; justify-content: space-between; align-items: center; padding: 0 25px; }
+        .nickname {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
 
-        .main-btn { background: linear-gradient(92deg, var(--accent), var(--accent-glow)); color: white; border: none; width: 100%; max-width: 400px; padding: 18px; border-radius: 16px; font-size: 18px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
+        /* --- БЛОК РАНГА --- */
+        .rank-container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .rank-icon {
+            font-size: 42px;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
+        }
+
+        .rank-name {
+            font-size: 20px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            color: var(--gold);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #00d2ff);
+            width: 0%;
+            transition: width 1s ease-out;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .progress-text {
+            font-size: 11px;
+            color: var(--text-sec);
+            margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+        }
+
+        /* --- ВЫБОР РЕЖИМА --- */
+        .mode-selector {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        select {
+            width: 100%;
+            padding: 16px;
+            background: var(--card-bg);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            appearance: none;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .mode-selector::after {
+            content: '▼';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+            pointer-events: none;
+            font-size: 12px;
+        }
+
+        /* --- СТАТИСТИКА --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: 900;
+            margin-bottom: 4px;
+            background: linear-gradient(90deg, #fff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-sec);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .stat-card.full-width {
+            grid-column: span 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+            height: 60px;
+        }
+
+        .stat-card.full-width .stat-value {
+            color: var(--accent);
+            -webkit-text-fill-color: var(--accent);
+            font-size: 30px;
+            margin: 0;
+        }
+
+        /* --- КНОПКА --- */
+        .main-btn {
+            background: linear-gradient(92deg, var(--accent), var(--accent-glow));
+            color: white;
+            border: none;
+            width: 100%;
+            max-width: 400px;
+            padding: 18px;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: auto;
+        }
+
+        .main-btn:active {
+            transform: scale(0.97);
+        }
+
+        .hint {
+            margin-top: 15px;
+            font-size: 10px;
+            color: var(--text-sec);
+            opacity: 0.5;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
     <div class="profile-header">
         <div class="avatar-placeholder" id="avatar">W</div>
-        <div class="nickname" id="username">Guest</div>
-        <div class="rating-badge"><span>🏆</span> <span id="rating">1000</span> MMR</div>
+        <div class="nickname" id="username">Loading...</div>
+    </div>
+
+    <div class="rank-container">
+        <div class="rank-icon" id="rankEmoji">🏆</div>
+        <div class="rank-name" id="rankName">LOADING</div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text">
+            <span>CURRENT: <span id="currentMMR" style="color: white;">0</span></span>
+            <span>NEXT: <span id="nextRank" style="color: white;">---</span></span>
+        </div>
     </div>
 
     <div class="mode-selector">
@@ -84,22 +283,29 @@
         </div>
     </div>
 
-    <button class="main-btn" onclick="createDuel()">⚔️ СОЗДАТЬ ДУЭЛЬ</button>
+    <button class="main-btn" onclick="createDuel()">
+        ⚔️ СОЗДАТЬ ДУЭЛЬ
+    </button>
+
+    <div class="hint">W-KEY LEAGUE SYSTEM v5.0</div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
+        // 1. Получаем параметры из URL
         const urlParams = new URLSearchParams(window.location.search);
+
         const nick = urlParams.get('nick') || "Guest";
         const rating = urlParams.get('rating') || "1000";
         const skin = urlParams.get('skin') || "default";
 
+        // Заполняем базовую инфу
         document.getElementById('username').innerText = nick;
         document.getElementById('avatar').innerText = nick.charAt(0).toUpperCase();
-        document.getElementById('rating').innerText = rating;
+        document.getElementById('currentMMR').innerText = rating;
 
-        // ПРИМЕНЕНИЕ СКИНА
+        // 2. Применяем купленный скин (Темы)
         if (skin === 'neon') {
             document.body.style.background = 'radial-gradient(circle at top, #2c003e, #000)';
             document.documentElement.style.setProperty('--accent', '#00ffcc');
@@ -109,24 +315,60 @@
             document.documentElement.style.setProperty('--accent', '#ffd700');
             document.documentElement.style.setProperty('--accent-glow', '#ffaa00');
             document.documentElement.style.setProperty('--text-main', '#ffecb3');
+            document.querySelector('.rank-name').style.color = '#fff';
         }
 
+        // 3. Парсим большие данные (Статистика + Ранг)
         let statsData = {};
+        let rankInfo = {
+            name: "Unranked",
+            emoji: "❔",
+            progress: 0,
+            next_rank: "Bronze"
+        };
+
         try {
             const rawData = urlParams.get('data');
-            if (rawData) statsData = JSON.parse(decodeURIComponent(rawData));
-        } catch (e) {}
+            if (rawData) {
+                const parsed = JSON.parse(decodeURIComponent(rawData));
+                statsData = parsed;
 
+                // Если бот передал инфу о ранге, берем её
+                if (parsed.rank_info) {
+                    rankInfo = parsed.rank_info;
+                }
+            }
+        } catch (e) {
+            console.error("Data Parse Error", e);
+        }
+
+        // 4. Заполняем блок ранга
+        document.getElementById('rankName').innerText = rankInfo.name;
+        document.getElementById('rankEmoji').innerText = rankInfo.emoji;
+        document.getElementById('nextRank').innerText = rankInfo.next_rank;
+
+        // Анимация полоски прогресса
+        setTimeout(() => {
+            document.getElementById('progressFill').style.width = rankInfo.progress + "%";
+        }, 300);
+
+        // 5. Функция обновления цифр при смене режима
         function updateStats() {
             const mode = document.getElementById('gameMode').value;
+            // Если данных нет, ставим по нулям
             const currentStats = statsData[mode] || {kills: 0, matches: 0, kd: 0};
+
             document.getElementById('kills').innerText = currentStats.kills;
             document.getElementById('matches').innerText = currentStats.matches;
             document.getElementById('kd').innerText = currentStats.kd;
+
             tg.HapticFeedback.selectionChanged();
         }
+
+        // Запуск при старте
         updateStats();
 
+        // 6. Кнопка создания дуэли
         function createDuel() {
             tg.HapticFeedback.impactOccurred('heavy');
             const selectedMode = document.getElementById('gameMode').value;
