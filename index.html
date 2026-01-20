@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>W-Key Arena</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .card {
+            background: linear-gradient(145deg, #1e1e1e, #252525);
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            max-width: 350px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+            margin-bottom: 20px;
+        }
+        .header {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #f1c40f; /* Желтый цвет фортнайта */
+            margin-bottom: 5px;
+        }
+        .nickname {
+            text-align: center;
+            font-size: 18px;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        .btn {
+            background: #f1c40f;
+            color: #000;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="header">W-KEY ARENA</div>
+        <div class="nickname" id="username">Загрузка...</div>
+
+        <div class="stat-row">
+            <span>💀 Kills</span>
+            <span id="kills">-</span>
+        </div>
+        <div class="stat-row">
+            <span>⚔️ Matches</span>
+            <span id="matches">-</span>
+        </div>
+        <div class="stat-row">
+            <span>🎯 K/D</span>
+            <span id="kd">-</span>
+        </div>
+    </div>
+
+    <button class="btn" onclick="startDuel()">⚔️ СОЗДАТЬ ДУЭЛЬ</button>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Раскрыть на весь экран
+
+        // Получаем данные, которые передал бот (пока заглушка)
+        // В реальности мы будем брать это из URL параметров
+        const urlParams = new URLSearchParams(window.location.search);
+        const nick = urlParams.get('nick') || "Гость";
+        const kills = urlParams.get('kills') || "0";
+        const matches = urlParams.get('matches') || "0";
+        const kd = urlParams.get('kd') || "0.0";
+
+        document.getElementById('username').innerText = nick;
+        document.getElementById('kills').innerText = kills;
+        document.getElementById('matches').innerText = matches;
+        document.getElementById('kd').innerText = kd;
+
+        function startDuel() {
+            // Отправляем данные обратно боту
+            tg.sendData("create_duel");
+        }
+    </script>
+</body>
+</html>
