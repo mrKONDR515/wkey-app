@@ -221,9 +221,20 @@
 
     <div class="mode-selector">
         <select id="gameMode" onchange="updateStats()">
-            <option value="solo">👤 Solo Battle Royale</option>
-            <option value="duo">👥 Duos Battle Royale</option>
-            <option value="squad">👨‍👩‍👦‍👦 Squads Battle Royale</option>
+            <option value="solo">👤 Solo (Battle Royale)</option>
+            <option value="duo">👥 Duo (Battle Royale)</option>
+            <option value="squad">👨‍👩‍👦‍👦 Squad (Battle Royale)</option>
+            
+            <option disabled>──────────────</option>
+
+            <option value="ranked_solo">🏆 Ranked Solo</option>
+            <option value="ranked_duo">🏆 Ranked Duo</option>
+            <option value="ranked_squad">🏆 Ranked Squad</option>
+
+            <option disabled>──────────────</option>
+
+            <option value="reload_duo">🔄 Reload Duo (No Build)</option>
+            <option value="reload_squad">🔄 Reload Squad</option>
         </select>
     </div>
 
