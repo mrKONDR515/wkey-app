@@ -221,19 +221,13 @@
 
     <div class="mode-selector">
         <select id="gameMode" onchange="updateStats()">
-            <option value="solo">👤 Solo (Battle Royale)</option>
-            <option value="duo">👥 Duo (Battle Royale)</option>
-            <option value="squad">👨‍👩‍👦‍👦 Squad (Battle Royale)</option>
-            
-            <option disabled>──────────────</option>
-
+            <option value="solo">Solo (Build)</option>
+            <option value="duo">Duo (Build)</option>
+            <option value="squad">Squad (Build)</option>
             <option value="ranked_solo">🏆 Ranked Solo</option>
             <option value="ranked_duo">🏆 Ranked Duo</option>
             <option value="ranked_squad">🏆 Ranked Squad</option>
-
-            <option disabled>──────────────</option>
-
-            <option value="reload_duo">🔄 Reload Duo (No Build)</option>
+            <option value="reload_duo">🔄 Reload Duo</option>
             <option value="reload_squad">🔄 Reload Squad</option>
         </select>
     </div>
@@ -261,63 +255,43 @@
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Растягиваем на весь экран
+        tg.expand();
 
-        // 1. Парсим данные из URL
         const urlParams = new URLSearchParams(window.location.search);
-
-        // Получаем ник и рейтинг
         const nick = urlParams.get('nick') || "Guest";
         const rating = urlParams.get('rating') || "1000";
 
-        // Обновляем шапку
         document.getElementById('username').innerText = nick;
         document.getElementById('avatar').innerText = nick.charAt(0).toUpperCase();
         document.getElementById('rating').innerText = rating;
 
-        // 2. Получаем "Большие данные" (JSON со всеми режимами)
         let statsData = {};
         try {
-            // Данные приходят в параметре 'data', закодированные (URL Encoded)
             const rawData = urlParams.get('data');
             if (rawData) {
-                // Декодируем и превращаем из текста обратно в Объект JS
                 statsData = JSON.parse(decodeURIComponent(rawData));
             }
-        } catch (e) {
-            console.error("Ошибка чтения статистики:", e);
-        }
+        } catch (e) { console.error(e); }
 
-        // 3. Функция обновления цифр на экране
         function updateStats() {
-            // Какой режим сейчас выбран в списке?
             const mode = document.getElementById('gameMode').value;
 
-            // Ищем данные для этого режима в нашем объекте
-            // Если данных нет, ставим нули
+            // ЗАЩИТА ОТ ОШИБОК: Если данных нет, подставляем нули
+            // Это починит отображение, если API не вернул данные для Ранкеда
             const currentStats = statsData[mode] || {kills: 0, matches: 0, kd: 0};
 
-            // Обновляем текст в карточках
             document.getElementById('kills').innerText = currentStats.kills;
             document.getElementById('matches').innerText = currentStats.matches;
             document.getElementById('kd').innerText = currentStats.kd;
 
-            // Легкая вибрация при смене
             tg.HapticFeedback.selectionChanged();
         }
 
-        // Запускаем обновление сразу при открытии (чтобы показать Solo)
         updateStats();
 
-        // 4. Отправка действия боту
         function createDuel() {
-            // Вибрация "успех"
             tg.HapticFeedback.impactOccurred('heavy');
-
-            // Берем выбранный режим
             const selectedMode = document.getElementById('gameMode').value;
-
-            // Шлем боту команду: "create_duel_action|solo" (например)
             tg.sendData("create_duel_action|" + selectedMode);
         }
     </script>
