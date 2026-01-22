@@ -33,6 +33,7 @@
 
         /* АНИМАЦИИ */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
         .header {
             text-align: center;
@@ -58,7 +59,27 @@
             padding: 5px 15px;
             border-radius: 20px;
             font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
             border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* СЕЛЕКТОР */
+        .mode-selector {
+            width: 100%;
+            background: var(--card-bg);
+            border: none;
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            outline: none;
+            appearance: none;
+            text-align: center;
+            font-weight: bold;
+            animation: fadeIn 0.6s ease;
         }
 
         /* КАРТОЧКИ СТАТИСТИКИ */
@@ -76,7 +97,10 @@
             border-radius: 12px;
             text-align: center;
             animation: fadeIn 0.7s ease;
+            transition: transform 0.1s;
         }
+
+        .stat-card:active { transform: scale(0.95); }
 
         .stat-value {
             font-size: 20px;
@@ -89,7 +113,7 @@
         /* ИСТОРИЯ МАТЧЕЙ */
         .history-section {
             width: 100%;
-            margin-bottom: 80px;
+            margin-bottom: 80px; /* Место под кнопку */
             animation: fadeIn 0.8s ease;
         }
 
@@ -109,6 +133,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            animation: slideIn 0.5s ease;
             border-left: 4px solid transparent;
         }
 
@@ -116,9 +141,12 @@
         .match-loss { border-left-color: var(--loss); background: linear-gradient(90deg, rgba(231, 76, 60, 0.1), transparent); }
         .match-draw { border-left-color: #bdc3c7; }
 
-        .win-text { color: var(--win); font-weight: bold; }
-        .loss-text { color: var(--loss); font-weight: bold; }
-        .draw-text { color: #bdc3c7; font-weight: bold; }
+        .match-info { display: flex; flex-direction: column; }
+        .match-mode { font-size: 14px; font-weight: bold; }
+        .match-date { font-size: 11px; color: var(--text-sec); }
+        .match-result { font-weight: bold; font-size: 14px; }
+        .win-text { color: var(--win); }
+        .loss-text { color: var(--loss); }
 
         /* КНОПКА */
         .play-btn {
@@ -136,6 +164,22 @@
             text-transform: uppercase;
             box-shadow: 0 10px 30px rgba(142, 68, 173, 0.4);
             cursor: pointer;
+            transition: all 0.2s;
+            animation: fadeIn 1s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .play-btn:active {
+            transform: scale(0.96);
+            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.2);
+        }
+
+        /* ЭФФЕКТЫ */
+        .glitch-effect {
+            animation: glitch 1s infinite;
         }
     </style>
 </head>
@@ -150,22 +194,24 @@
         </div>
     </div>
 
-    <select id="gameMode" style="width:100%; padding:10px; background:#222; color:white; border:none; border-radius:10px; margin-bottom:15px;" onchange="renderStats()">
+    <select class="mode-selector" id="gameMode" onchange="updateStatsWithSound()">
         <option value="solo">SOLO BUILD</option>
         <option value="duo">DUO BUILD</option>
         <option value="squad">SQUAD BUILD</option>
+        <option value="ranked_solo">RANKED SOLO</option>
+        <option value="ranked_duo">RANKED DUO</option>
     </select>
 
     <div class="stats-grid">
-        <div class="stat-card">
+        <div class="stat-card" onclick="playClick()">
             <div class="stat-value" id="kills">0</div>
             <div class="stat-label">KILLS</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" onclick="playClick()">
             <div class="stat-value" id="matches">0</div>
             <div class="stat-label">MATCHES</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" onclick="playClick()">
             <div class="stat-value" id="kd">0</div>
             <div class="stat-label">K/D</div>
         </div>
@@ -173,18 +219,51 @@
 
     <div class="history-section">
         <div class="history-title">LAST MATCHES</div>
-        <div id="historyList"></div>
+        <div id="historyList">
+            </div>
     </div>
 
     <button class="play-btn" onclick="createDuel()">
-        <span>⚔️ ИГРАТЬ (SOLO)</span>
+        <span>⚔️ СОЗДАТЬ ДУЭЛЬ</span>
     </button>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Парсинг данных из URL (как передает твой commands.py)
+        // ЗВУКИ (Короткие, ненавязчивые)
+        const clickSound = new Audio("https://cdn.freesound.org/previews/256/256116_3263906-lq.mp3");
+        const successSound = new Audio("https://cdn.freesound.org/previews/270/270404_5123851-lq.mp3");
+
+        function playClick() {
+            clickSound.currentTime = 0;
+            clickSound.volume = 0.5;
+            clickSound.play().catch(e => console.log("Audio requires interaction"));
+        }
+
+        // АНИМАЦИЯ ЧИСЕЛ (Count Up)
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            if (start === end) { obj.innerText = end; return; }
+            const range = end - start;
+            let current = start;
+            const increment = end > start ? 1 : -1;
+            const stepTime = Math.abs(Math.floor(duration / range));
+
+            const realStepTime = Math.max(stepTime, 10);
+            const stepValue = Math.ceil(range / (duration / realStepTime));
+
+            const timer = setInterval(function() {
+                current += stepValue;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                obj.innerText = Number.isInteger(end) ? current : current.toFixed(2);
+            }, realStepTime);
+        }
+
+        // ПАРСИНГ ДАННЫХ
         const urlParams = new URLSearchParams(window.location.search);
         const nickname = urlParams.get('nick') || "Player";
         const rawData = urlParams.get('data');
@@ -195,59 +274,76 @@
 
         try {
             const parsed = JSON.parse(rawData);
-            statsData = parsed; // Тут вся статистика
+            statsData = parsed;
             rankInfo = parsed.rank_info || rankInfo;
-            matchHistory = parsed.history || []; // Вот массив истории из твоей БД
+            matchHistory = parsed.history || [];
         } catch (e) {
             console.error("JSON Error", e);
         }
 
-        // Заполнение шапки
+        // РЕНДЕРИНГ
         document.getElementById('nickname').innerText = nickname;
         document.getElementById('rankName').innerText = rankInfo.name;
         document.getElementById('rankEmoji').innerText = rankInfo.emoji;
+        document.getElementById('avatarEmoji').innerText = rankInfo.emoji;
 
-        // Функция отображения статистики при смене режима
-        function renderStats() {
-            const mode = document.getElementById('gameMode').value;
-            const current = statsData[mode] || {kills: 0, matches: 0, kd: 0};
-
-            document.getElementById('kills').innerText = current.kills;
-            document.getElementById('matches').innerText = current.matches;
-            document.getElementById('kd').innerText = current.kd;
-        }
-
-        // Рендеринг истории (используем данные из commands.py -> db.py)
-        const list = document.getElementById('historyList');
+        // РЕНДЕРИНГ ИСТОРИИ
+        const historyContainer = document.getElementById('historyList');
         if (matchHistory.length === 0) {
-            list.innerHTML = '<div style="text-align:center; color:#555; padding:20px;">Матчей пока нет</div>';
+            historyContainer.innerHTML = '<div style="text-align:center; color:#555; padding:20px;">No matches played yet</div>';
         } else {
-            matchHistory.forEach(match => {
+            matchHistory.forEach((match, index) => {
                 const div = document.createElement('div');
                 div.className = `history-item match-${match.result}`;
+                div.style.animationDelay = `${index * 0.1}s`;
 
-                let resText = "DRAW";
-                let resClass = "draw-text";
-                if(match.result === 'win') { resText = "VICTORY"; resClass = "win-text"; }
-                if(match.result === 'loss') { resText = "DEFEAT"; resClass = "loss-text"; }
+                const resultText = match.result === 'win' ? 'VICTORY' : (match.result === 'loss' ? 'DEFEAT' : 'DRAW');
+                const resultClass = match.result === 'win' ? 'win-text' : (match.result === 'loss' ? 'loss-text' : '');
 
                 div.innerHTML = `
-                    <div>
-                        <div style="font-weight:bold; font-size:14px;">${match.mode.toUpperCase()}</div>
-                        <div style="font-size:11px; color:#aaa;">${match.date}</div>
+                    <div class="match-info">
+                        <span class="match-mode">${match.mode.toUpperCase()}</span>
+                        <span class="match-date">${match.date}</span>
                     </div>
-                    <div class="${resClass}">${resText}</div>
+                    <div class="match-result ${resultClass}">${resultText}</div>
                 `;
-                list.appendChild(div);
+                historyContainer.appendChild(div);
             });
         }
 
-        // Инициализация
-        renderStats();
+        // ОБНОВЛЕНИЕ ЦИФР
+        let previousStats = {kills: 0, matches: 0, kd: 0};
+
+        function updateStatsWithSound() {
+            playClick();
+            updateStats();
+        }
+
+        function updateStats() {
+            const mode = document.getElementById('gameMode').value;
+            const currentStats = statsData[mode] || {kills: 0, matches: 0, kd: 0};
+
+            animateValue("kills", 0, currentStats.kills, 500);
+            animateValue("matches", 0, currentStats.matches, 500);
+
+            document.getElementById('kd').innerText = currentStats.kd;
+            tg.HapticFeedback.selectionChanged();
+        }
+
+        // Запуск
+        updateStats();
 
         function createDuel() {
-            tg.hapticFeedback.impactOccurred('medium');
-            tg.sendData("create_duel_action|solo");
+            successSound.play().catch(e => {});
+            tg.HapticFeedback.impactOccurred('heavy');
+            const selectedMode = document.getElementById('gameMode').value;
+
+            const btn = document.querySelector('.play-btn');
+            btn.innerHTML = "⌛ СОЗДАНИЕ...";
+
+            setTimeout(() => {
+                tg.sendData("create_duel_action|" + selectedMode);
+            }, 300);
         }
     </script>
 </body>
