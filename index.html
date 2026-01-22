@@ -31,113 +31,40 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Анимации */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            animation: fadeIn 0.5s ease;
-        }
-
+        .header { text-align: center; margin-bottom: 20px; }
         .avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
+            width: 80px; height: 80px; border-radius: 50%;
             background: linear-gradient(45deg, var(--accent), #3498db);
-            margin: 0 auto 10px;
-            box-shadow: 0 0 20px rgba(142, 68, 173, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
+            margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 30px;
         }
-
         .rank-badge {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1); padding: 5px 15px; border-radius: 20px;
+            font-size: 14px; display: inline-flex; align-items: center; gap: 5px;
         }
+        .mmr-display { font-size: 12px; color: var(--accent); margin-top: 5px; font-weight: bold; }
 
-        .mmr-display {
-            font-size: 12px;
-            color: var(--accent);
-            margin-top: 5px;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            width: 100%;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            padding: 15px 5px;
-            border-radius: 12px;
-            text-align: center;
-            animation: fadeIn 0.7s ease;
-        }
-
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; margin-bottom: 25px; }
+        .stat-card { background: var(--card-bg); padding: 15px 5px; border-radius: 12px; text-align: center; }
         .stat-value { font-size: 20px; font-weight: 800; margin-bottom: 5px; }
         .stat-label { font-size: 12px; color: var(--text-sec); }
 
-        .history-section {
-            width: 100%;
-            margin-bottom: 80px;
-            animation: fadeIn 0.8s ease;
-        }
-
-        .history-title {
-            font-size: 14px;
-            color: var(--text-sec);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-
+        .history-section { width: 100%; margin-bottom: 80px; }
+        .history-title { font-size: 14px; color: var(--text-sec); margin-bottom: 10px; text-transform: uppercase; }
         .history-item {
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 4px solid transparent;
+            background: var(--card-bg); border-radius: 10px; padding: 12px; margin-bottom: 8px;
+            display: flex; justify-content: space-between; align-items: center; border-left: 4px solid transparent;
         }
-
         .match-win { border-left-color: var(--win); }
         .match-loss { border-left-color: var(--loss); }
         .match-draw { border-left-color: #bdc3c7; }
-
         .win-text { color: var(--win); font-weight: bold; }
         .loss-text { color: var(--loss); font-weight: bold; }
-        .draw-text { color: #bdc3c7; font-weight: bold; }
 
         .play-btn {
-            position: fixed;
-            bottom: 20px;
-            width: 90%;
-            left: 5%;
+            position: fixed; bottom: 20px; width: 90%; left: 5%;
             background: linear-gradient(45deg, #8e44ad, #c0392b);
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 16px;
-            font-size: 18px;
-            font-weight: 900;
-            text-transform: uppercase;
-            box-shadow: 0 10px 30px rgba(142, 68, 173, 0.4);
-            cursor: pointer;
+            color: white; border: none; padding: 18px; border-radius: 16px;
+            font-size: 18px; font-weight: 900; text-transform: uppercase; cursor: pointer;
         }
     </style>
 </head>
@@ -174,7 +101,7 @@
     </div>
 
     <button class="play-btn" onclick="startSearch()">
-        <span>🔍 НАЙТИ ИГРУ</span>
+        <span id="btnText">🔍 НАЙТИ ИГРУ</span>
     </button>
 
     <script>
@@ -183,7 +110,6 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const nickname = urlParams.get('nick') || "Player";
-        // Мы передаем rating отдельно в URL для удобства
         const rating = urlParams.get('rating') || "1000";
         const rawData = urlParams.get('data');
 
@@ -193,38 +119,33 @@
 
         try {
             const parsed = JSON.parse(rawData);
-            // Берем статистику SOLO как основную
-            statsData = parsed.stats.solo || {kills: 0, matches: 0, kd: 0};
+            statsData = parsed.stats || {kills: 0, matches: 0, kd: 0};
             rankInfo = parsed.rank_info || rankInfo;
             matchHistory = parsed.history || [];
         } catch (e) {
             console.error("JSON Error", e);
         }
 
-        // Рендеринг
+        // Рендер
         document.getElementById('nickname').innerText = nickname;
         document.getElementById('rankName').innerText = rankInfo.name;
         document.getElementById('rankEmoji').innerText = rankInfo.emoji;
         document.getElementById('avatarEmoji').innerText = rankInfo.emoji;
-        document.getElementById('mmrValue').innerText = `MMR: ${rating}`; // Показываем MMR
+        document.getElementById('mmrValue').innerText = `MMR: ${rating}`;
 
-        document.getElementById('kills').innerText = statsData.kills;
-        document.getElementById('matches').innerText = statsData.matches;
-        document.getElementById('kd').innerText = statsData.kd;
+        document.getElementById('kills').innerText = statsData.kills || 0;
+        document.getElementById('matches').innerText = statsData.matches || 0;
+        document.getElementById('kd').innerText = statsData.kd || 0;
 
-        // История
         const list = document.getElementById('historyList');
-        if (matchHistory.length === 0) {
-            list.innerHTML = '<div style="text-align:center; color:#555; padding:20px;">Матчей пока нет</div>';
+        if (!matchHistory.length) {
+            list.innerHTML = '<div style="text-align:center; color:#555; padding:20px;">Матчей нет</div>';
         } else {
             matchHistory.forEach(match => {
                 const div = document.createElement('div');
                 div.className = `history-item match-${match.result}`;
-
-                let resText = "DRAW";
-                let resClass = "draw-text";
-                if(match.result === 'win') { resText = "VICTORY"; resClass = "win-text"; }
-                if(match.result === 'loss') { resText = "DEFEAT"; resClass = "loss-text"; }
+                let resText = match.result === 'win' ? "VICTORY" : (match.result === 'loss' ? "DEFEAT" : "DRAW");
+                let resClass = match.result === 'win' ? "win-text" : (match.result === 'loss' ? "loss-text" : "draw-text");
 
                 div.innerHTML = `
                     <div>
@@ -238,8 +159,9 @@
         }
 
         function startSearch() {
-            tg.hapticFeedback.impactOccurred('heavy');
-            // Отправляем данные боту, что мы хотим искать игру
+            tg.HapticFeedback.impactOccurred('medium');
+            document.getElementById('btnText').innerText = "🚀 ОТПРАВЛЯЮ...";
+            // Отправляем данные в бота
             tg.sendData("search_game_action");
         }
     </script>
