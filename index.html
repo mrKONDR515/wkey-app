@@ -31,9 +31,8 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* АНИМАЦИИ */
+        /* Анимации */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
         .header {
             text-align: center;
@@ -65,24 +64,14 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* СЕЛЕКТОР */
-        .mode-selector {
-            width: 100%;
-            background: var(--card-bg);
-            border: none;
-            color: white;
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 16px;
-            margin-bottom: 20px;
-            outline: none;
-            appearance: none;
-            text-align: center;
+        .mmr-display {
+            font-size: 12px;
+            color: var(--accent);
+            margin-top: 5px;
             font-weight: bold;
-            animation: fadeIn 0.6s ease;
+            letter-spacing: 1px;
         }
 
-        /* КАРТОЧКИ СТАТИСТИКИ */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -97,23 +86,14 @@
             border-radius: 12px;
             text-align: center;
             animation: fadeIn 0.7s ease;
-            transition: transform 0.1s;
         }
 
-        .stat-card:active { transform: scale(0.95); }
-
-        .stat-value {
-            font-size: 20px;
-            font-weight: 800;
-            margin-bottom: 5px;
-        }
-
+        .stat-value { font-size: 20px; font-weight: 800; margin-bottom: 5px; }
         .stat-label { font-size: 12px; color: var(--text-sec); }
 
-        /* ИСТОРИЯ МАТЧЕЙ */
         .history-section {
             width: 100%;
-            margin-bottom: 80px; /* Место под кнопку */
+            margin-bottom: 80px;
             animation: fadeIn 0.8s ease;
         }
 
@@ -122,7 +102,6 @@
             color: var(--text-sec);
             margin-bottom: 10px;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         .history-item {
@@ -133,22 +112,17 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            animation: slideIn 0.5s ease;
             border-left: 4px solid transparent;
         }
 
-        .match-win { border-left-color: var(--win); background: linear-gradient(90deg, rgba(46, 204, 113, 0.1), transparent); }
-        .match-loss { border-left-color: var(--loss); background: linear-gradient(90deg, rgba(231, 76, 60, 0.1), transparent); }
+        .match-win { border-left-color: var(--win); }
+        .match-loss { border-left-color: var(--loss); }
         .match-draw { border-left-color: #bdc3c7; }
 
-        .match-info { display: flex; flex-direction: column; }
-        .match-mode { font-size: 14px; font-weight: bold; }
-        .match-date { font-size: 11px; color: var(--text-sec); }
-        .match-result { font-weight: bold; font-size: 14px; }
-        .win-text { color: var(--win); }
-        .loss-text { color: var(--loss); }
+        .win-text { color: var(--win); font-weight: bold; }
+        .loss-text { color: var(--loss); font-weight: bold; }
+        .draw-text { color: #bdc3c7; font-weight: bold; }
 
-        /* КНОПКА */
         .play-btn {
             position: fixed;
             bottom: 20px;
@@ -164,22 +138,6 @@
             text-transform: uppercase;
             box-shadow: 0 10px 30px rgba(142, 68, 173, 0.4);
             cursor: pointer;
-            transition: all 0.2s;
-            animation: fadeIn 1s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .play-btn:active {
-            transform: scale(0.96);
-            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.2);
-        }
-
-        /* ЭФФЕКТЫ */
-        .glitch-effect {
-            animation: glitch 1s infinite;
         }
     </style>
 </head>
@@ -192,26 +150,19 @@
             <span id="rankEmoji">🏆</span>
             <span id="rankName">Loading...</span>
         </div>
+        <div class="mmr-display" id="mmrValue">MMR: 0</div>
     </div>
 
-    <select class="mode-selector" id="gameMode" onchange="updateStatsWithSound()">
-        <option value="solo">SOLO BUILD</option>
-        <option value="duo">DUO BUILD</option>
-        <option value="squad">SQUAD BUILD</option>
-        <option value="ranked_solo">RANKED SOLO</option>
-        <option value="ranked_duo">RANKED DUO</option>
-    </select>
-
     <div class="stats-grid">
-        <div class="stat-card" onclick="playClick()">
+        <div class="stat-card">
             <div class="stat-value" id="kills">0</div>
             <div class="stat-label">KILLS</div>
         </div>
-        <div class="stat-card" onclick="playClick()">
+        <div class="stat-card">
             <div class="stat-value" id="matches">0</div>
             <div class="stat-label">MATCHES</div>
         </div>
-        <div class="stat-card" onclick="playClick()">
+        <div class="stat-card">
             <div class="stat-value" id="kd">0</div>
             <div class="stat-label">K/D</div>
         </div>
@@ -219,53 +170,21 @@
 
     <div class="history-section">
         <div class="history-title">LAST MATCHES</div>
-        <div id="historyList">
-            </div>
+        <div id="historyList"></div>
     </div>
 
-    <button class="play-btn" onclick="createDuel()">
-        <span>⚔️ СОЗДАТЬ ДУЭЛЬ</span>
+    <button class="play-btn" onclick="startSearch()">
+        <span>🔍 НАЙТИ ИГРУ</span>
     </button>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // ЗВУКИ (Короткие, ненавязчивые)
-        const clickSound = new Audio("https://cdn.freesound.org/previews/256/256116_3263906-lq.mp3");
-        const successSound = new Audio("https://cdn.freesound.org/previews/270/270404_5123851-lq.mp3");
-
-        function playClick() {
-            clickSound.currentTime = 0;
-            clickSound.volume = 0.5;
-            clickSound.play().catch(e => console.log("Audio requires interaction"));
-        }
-
-        // АНИМАЦИЯ ЧИСЕЛ (Count Up)
-        function animateValue(id, start, end, duration) {
-            const obj = document.getElementById(id);
-            if (start === end) { obj.innerText = end; return; }
-            const range = end - start;
-            let current = start;
-            const increment = end > start ? 1 : -1;
-            const stepTime = Math.abs(Math.floor(duration / range));
-
-            const realStepTime = Math.max(stepTime, 10);
-            const stepValue = Math.ceil(range / (duration / realStepTime));
-
-            const timer = setInterval(function() {
-                current += stepValue;
-                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
-                    current = end;
-                    clearInterval(timer);
-                }
-                obj.innerText = Number.isInteger(end) ? current : current.toFixed(2);
-            }, realStepTime);
-        }
-
-        // ПАРСИНГ ДАННЫХ
         const urlParams = new URLSearchParams(window.location.search);
         const nickname = urlParams.get('nick') || "Player";
+        // Мы передаем rating отдельно в URL для удобства
+        const rating = urlParams.get('rating') || "1000";
         const rawData = urlParams.get('data');
 
         let statsData = {};
@@ -274,76 +193,54 @@
 
         try {
             const parsed = JSON.parse(rawData);
-            statsData = parsed;
+            // Берем статистику SOLO как основную
+            statsData = parsed.stats.solo || {kills: 0, matches: 0, kd: 0};
             rankInfo = parsed.rank_info || rankInfo;
             matchHistory = parsed.history || [];
         } catch (e) {
             console.error("JSON Error", e);
         }
 
-        // РЕНДЕРИНГ
+        // Рендеринг
         document.getElementById('nickname').innerText = nickname;
         document.getElementById('rankName').innerText = rankInfo.name;
         document.getElementById('rankEmoji').innerText = rankInfo.emoji;
         document.getElementById('avatarEmoji').innerText = rankInfo.emoji;
+        document.getElementById('mmrValue').innerText = `MMR: ${rating}`; // Показываем MMR
 
-        // РЕНДЕРИНГ ИСТОРИИ
-        const historyContainer = document.getElementById('historyList');
+        document.getElementById('kills').innerText = statsData.kills;
+        document.getElementById('matches').innerText = statsData.matches;
+        document.getElementById('kd').innerText = statsData.kd;
+
+        // История
+        const list = document.getElementById('historyList');
         if (matchHistory.length === 0) {
-            historyContainer.innerHTML = '<div style="text-align:center; color:#555; padding:20px;">No matches played yet</div>';
+            list.innerHTML = '<div style="text-align:center; color:#555; padding:20px;">Матчей пока нет</div>';
         } else {
-            matchHistory.forEach((match, index) => {
+            matchHistory.forEach(match => {
                 const div = document.createElement('div');
                 div.className = `history-item match-${match.result}`;
-                div.style.animationDelay = `${index * 0.1}s`;
 
-                const resultText = match.result === 'win' ? 'VICTORY' : (match.result === 'loss' ? 'DEFEAT' : 'DRAW');
-                const resultClass = match.result === 'win' ? 'win-text' : (match.result === 'loss' ? 'loss-text' : '');
+                let resText = "DRAW";
+                let resClass = "draw-text";
+                if(match.result === 'win') { resText = "VICTORY"; resClass = "win-text"; }
+                if(match.result === 'loss') { resText = "DEFEAT"; resClass = "loss-text"; }
 
                 div.innerHTML = `
-                    <div class="match-info">
-                        <span class="match-mode">${match.mode.toUpperCase()}</span>
-                        <span class="match-date">${match.date}</span>
+                    <div>
+                        <div style="font-weight:bold; font-size:14px;">${match.mode.toUpperCase()}</div>
+                        <div style="font-size:11px; color:#aaa;">${match.date}</div>
                     </div>
-                    <div class="match-result ${resultClass}">${resultText}</div>
+                    <div class="${resClass}">${resText}</div>
                 `;
-                historyContainer.appendChild(div);
+                list.appendChild(div);
             });
         }
 
-        // ОБНОВЛЕНИЕ ЦИФР
-        let previousStats = {kills: 0, matches: 0, kd: 0};
-
-        function updateStatsWithSound() {
-            playClick();
-            updateStats();
-        }
-
-        function updateStats() {
-            const mode = document.getElementById('gameMode').value;
-            const currentStats = statsData[mode] || {kills: 0, matches: 0, kd: 0};
-
-            animateValue("kills", 0, currentStats.kills, 500);
-            animateValue("matches", 0, currentStats.matches, 500);
-
-            document.getElementById('kd').innerText = currentStats.kd;
-            tg.HapticFeedback.selectionChanged();
-        }
-
-        // Запуск
-        updateStats();
-
-        function createDuel() {
-            successSound.play().catch(e => {});
-            tg.HapticFeedback.impactOccurred('heavy');
-            const selectedMode = document.getElementById('gameMode').value;
-
-            const btn = document.querySelector('.play-btn');
-            btn.innerHTML = "⌛ СОЗДАНИЕ...";
-
-            setTimeout(() => {
-                tg.sendData("create_duel_action|" + selectedMode);
-            }, 300);
+        function startSearch() {
+            tg.hapticFeedback.impactOccurred('heavy');
+            // Отправляем данные боту, что мы хотим искать игру
+            tg.sendData("search_game_action");
         }
     </script>
 </body>
