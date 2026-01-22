@@ -125,13 +125,13 @@
         const rating = urlParams.get('rating') || "1000";
         const rawData = urlParams.get('data');
 
-        let allStats = {}; // Храним всю статистику здесь
+        let allStats = {};
         let rankInfo = {name: "Bronze", emoji: "🟤"};
         let matchHistory = [];
 
         try {
             const parsed = JSON.parse(rawData);
-            allStats = parsed.stats || {}; // Теперь здесь объект с ключами solo, duo...
+            allStats = parsed.stats || {};
             rankInfo = parsed.rank_info || rankInfo;
             matchHistory = parsed.history || [];
         } catch (e) {
@@ -189,7 +189,11 @@
         function startSearch() {
             tg.HapticFeedback.impactOccurred('heavy');
             document.getElementById('btnText').innerText = "🚀 ОТПРАВЛЯЮ...";
-            tg.sendData("search_game_action");
+
+            // Берем выбранный режим
+            const mode = document.getElementById('gameMode').value;
+            // Отправляем: "действие|режим"
+            tg.sendData("search_game_action|" + mode);
         }
     </script>
 </body>
