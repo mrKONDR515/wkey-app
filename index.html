@@ -7,80 +7,163 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-color: #0f0f13;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --accent: #8e44ad;
-            --win: #2ecc71;
-            --loss: #e74c3c;
+            --bg-grad-1: #09090b;
+            --bg-grad-2: #16161e;
+            --card-bg: rgba(255, 255, 255, 0.07);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --accent: #a855f7; /* Purple Neon */
+            --accent-glow: rgba(168, 85, 247, 0.4);
+            --win: #10b981;
+            --win-bg: rgba(16, 185, 129, 0.1);
+            --loss: #ef4444;
+            --loss-bg: rgba(239, 68, 68, 0.1);
             --text-main: #ffffff;
-            --text-sec: #a0a0a0;
+            --text-sec: #9ca3af;
         }
 
         body {
-            background-color: var(--bg-color);
+            background: radial-gradient(circle at top center, var(--bg-grad-2), var(--bg-grad-1));
             color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
             margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center;
-            min-height: 100vh; background: radial-gradient(circle at top, #1a1a2e, #0f0f13);
+            min-height: 100vh;
             user-select: none; -webkit-tap-highlight-color: transparent;
         }
 
-        .header { text-align: center; margin-bottom: 20px; }
+        /* HEADER PROFILE */
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            width: 100%;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        .avatar-ring {
+            width: 86px; height: 86px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), #3b82f6);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 20px var(--accent-glow);
+            margin-bottom: 12px;
+        }
+
         .avatar {
             width: 80px; height: 80px; border-radius: 50%;
-            background: linear-gradient(45deg, var(--accent), #3498db);
-            margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 30px;
+            background: #1e1e24;
+            display: flex; align-items: center; justify-content: center; font-size: 32px;
         }
+
+        h2 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: 0.5px; }
+
         .rank-badge {
-            background: rgba(255, 255, 255, 0.1); padding: 5px 15px; border-radius: 20px;
-            font-size: 14px; display: inline-flex; align-items: center; gap: 5px;
+            margin-top: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px 16px; border-radius: 30px;
+            font-size: 13px; font-weight: 600;
+            display: inline-flex; align-items: center; gap: 6px;
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(5px);
         }
-        .mmr-display { font-size: 12px; color: var(--accent); margin-top: 5px; font-weight: bold; }
 
-        /* СЕЛЕКТОР РЕЖИМОВ */
+        .mmr-display {
+            font-size: 11px; color: var(--accent); margin-top: 6px;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+        }
+
+        /* SELECTOR */
         .mode-selector {
-            width: 100%; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); color: white;
-            padding: 12px; border-radius: 12px; font-size: 16px; margin-bottom: 20px;
-            outline: none; appearance: none; text-align: center; font-weight: bold;
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: white;
+            padding: 14px; border-radius: 16px;
+            font-size: 15px; margin-bottom: 20px;
+            outline: none; appearance: none;
+            text-align: center; font-weight: 600;
+            backdrop-filter: blur(10px);
+            transition: border-color 0.2s;
+        }
+        .mode-selector:focus { border-color: var(--accent); }
+
+        /* STATS GRID */
+        .stats-grid {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;
+            width: 100%; margin-bottom: 30px;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            padding: 16px 8px; border-radius: 16px;
+            text-align: center;
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+        }
+        .stat-value { font-size: 22px; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.5px;}
+        .stat-label { font-size: 10px; color: var(--text-sec); font-weight: 700; letter-spacing: 0.5px; }
+
+        /* HISTORY */
+        .history-section { width: 100%; margin-bottom: 100px; }
+        .history-title {
+            font-size: 12px; color: var(--text-sec);
+            margin-bottom: 12px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px; padding-left: 5px;
         }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; margin-bottom: 25px; }
-        .stat-card { background: var(--card-bg); padding: 15px 5px; border-radius: 12px; text-align: center; transition: transform 0.1s; }
-        .stat-card:active { transform: scale(0.95); }
-        .stat-value { font-size: 20px; font-weight: 800; margin-bottom: 5px; }
-        .stat-label { font-size: 12px; color: var(--text-sec); }
-
-        .history-section { width: 100%; margin-bottom: 80px; }
-        .history-title { font-size: 14px; color: var(--text-sec); margin-bottom: 10px; text-transform: uppercase; }
         .history-item {
-            background: var(--card-bg); border-radius: 10px; padding: 12px; margin-bottom: 8px;
-            display: flex; justify-content: space-between; align-items: center; border-left: 4px solid transparent;
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 14px 16px; margin-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center;
+            border: 1px solid var(--card-border);
+            transition: transform 0.1s;
         }
-        .match-win { border-left-color: var(--win); }
-        .match-loss { border-left-color: var(--loss); }
-        .match-draw { border-left-color: #bdc3c7; }
-        .win-text { color: var(--win); font-weight: bold; }
-        .loss-text { color: var(--loss); font-weight: bold; }
-        .draw-text { color: #bdc3c7; font-weight: bold; }
+        .history-item:active { transform: scale(0.98); }
 
+        .match-win { border-left: 3px solid var(--win); background: linear-gradient(90deg, var(--win-bg), transparent); }
+        .match-loss { border-left: 3px solid var(--loss); background: linear-gradient(90deg, var(--loss-bg), transparent); }
+        .match-draw { border-left: 3px solid #64748b; }
+
+        .match-meta { display: flex; flex-direction: column; gap: 2px; }
+        .match-mode { font-size: 14px; font-weight: 700; }
+        .match-date { font-size: 11px; color: var(--text-sec); }
+
+        .res-badge { font-size: 12px; font-weight: 800; text-transform: uppercase; }
+        .win-text { color: var(--win); text-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
+        .loss-text { color: var(--loss); }
+        .draw-text { color: #94a3b8; }
+
+        /* PLAY BUTTON */
         .play-btn {
-            position: fixed; bottom: 20px; width: 90%; left: 5%;
-            background: linear-gradient(45deg, #8e44ad, #c0392b); color: white;
-            border: none; padding: 18px; border-radius: 16px; font-size: 18px;
-            font-weight: 900; text-transform: uppercase; cursor: pointer;
+            position: fixed; bottom: 25px; width: 90%; left: 5%;
+            background: linear-gradient(135deg, #9333ea, #db2777);
+            color: white; border: none; padding: 18px; border-radius: 20px;
+            font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px -5px rgba(147, 51, 234, 0.5);
+            transition: transform 0.2s;
+            animation: pulse 2s infinite;
+        }
+        .play-btn:active { transform: scale(0.96); }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(147, 51, 234, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0); }
         }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div class="avatar" id="avatarEmoji">👤</div>
+        <div class="avatar-ring">
+            <div class="avatar" id="avatarEmoji">👤</div>
+        </div>
         <h2 id="nickname">Loading...</h2>
         <div class="rank-badge">
             <span id="rankEmoji">🏆</span>
             <span id="rankName">Loading...</span>
         </div>
-        <div class="mmr-display" id="mmrValue">MMR: 0</div>
+        <div class="mmr-display" id="mmrValue">RANKED RATING: 0</div>
     </div>
 
     <select class="mode-selector" id="gameMode" onchange="updateStats()">
@@ -95,7 +178,7 @@
     <div class="stats-grid">
         <div class="stat-card" onclick="playClick()">
             <div class="stat-value" id="kills">0</div>
-            <div class="stat-label">KILLS</div>
+            <div class="stat-label">ELIMINATIONS</div>
         </div>
         <div class="stat-card" onclick="playClick()">
             <div class="stat-value" id="matches">0</div>
@@ -103,17 +186,17 @@
         </div>
         <div class="stat-card" onclick="playClick()">
             <div class="stat-value" id="kd">0</div>
-            <div class="stat-label">K/D</div>
+            <div class="stat-label">K/D RATIO</div>
         </div>
     </div>
 
     <div class="history-section">
-        <div class="history-title">LAST MATCHES</div>
+        <div class="history-title">Recent Activity</div>
         <div id="historyList"></div>
     </div>
 
     <button class="play-btn" onclick="startSearch()">
-        <span id="btnText">🔍 НАЙТИ ИГРУ</span>
+        <span id="btnText">🔥 НАЙТИ ИГРУ</span>
     </button>
 
     <script>
@@ -139,13 +222,12 @@
         }
 
         // Рендер шапки
-        document.getElementById('nickname').innerText = nickname;
-        document.getElementById('rankName').innerText = rankInfo.name;
+        document.getElementById('nickname').innerText = nickname.toUpperCase();
+        document.getElementById('rankName').innerText = rankInfo.name.toUpperCase();
         document.getElementById('rankEmoji').innerText = rankInfo.emoji;
         document.getElementById('avatarEmoji').innerText = rankInfo.emoji;
-        document.getElementById('mmrValue').innerText = `MMR: ${rating}`;
+        document.getElementById('mmrValue').innerText = `${rating} MMR`;
 
-        // Функция обновления цифр при смене режима
         function updateStats() {
             const mode = document.getElementById('gameMode').value;
             const current = allStats[mode] || {kills: 0, matches: 0, kd: 0};
@@ -157,13 +239,11 @@
             tg.HapticFeedback.selectionChanged();
         }
 
-        // Первый рендер
         updateStats();
 
-        // История
         const list = document.getElementById('historyList');
         if (!matchHistory.length) {
-            list.innerHTML = '<div style="text-align:center; color:#555; padding:20px;">Матчей нет</div>';
+            list.innerHTML = '<div style="text-align:center; color:#555; padding:20px; font-size:14px;">История матчей пуста</div>';
         } else {
             matchHistory.forEach(match => {
                 const div = document.createElement('div');
@@ -172,11 +252,11 @@
                 let resClass = match.result === 'win' ? "win-text" : (match.result === 'loss' ? "loss-text" : "draw-text");
 
                 div.innerHTML = `
-                    <div>
-                        <div style="font-weight:bold; font-size:14px;">${match.mode.toUpperCase()}</div>
-                        <div style="font-size:11px; color:#aaa;">${match.date}</div>
+                    <div class="match-meta">
+                        <div class="match-mode">${match.mode.toUpperCase().replace('_', ' ')}</div>
+                        <div class="match-date">${match.date}</div>
                     </div>
-                    <div class="${resClass}">${resText}</div>
+                    <div class="res-badge ${resClass}">${resText}</div>
                 `;
                 list.appendChild(div);
             });
@@ -188,11 +268,8 @@
 
         function startSearch() {
             tg.HapticFeedback.impactOccurred('heavy');
-            document.getElementById('btnText').innerText = "🚀 ОТПРАВЛЯЮ...";
-
-            // Берем выбранный режим
+            document.getElementById('btnText').innerText = "🔭 ПОДКЛЮЧЕНИЕ...";
             const mode = document.getElementById('gameMode').value;
-            // Отправляем: "действие|режим"
             tg.sendData("search_game_action|" + mode);
         }
     </script>
